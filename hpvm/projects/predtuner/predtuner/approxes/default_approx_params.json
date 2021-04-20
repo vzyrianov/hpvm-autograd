@@ -1,0 +1,499 @@
+[{
+    "class": "FP32Baseline",
+    "name": "11",
+    "devices": ["cpu"],
+    "baseline_priority": 1
+}, {
+    "class": "FP16Approx",
+    "name": "12",
+    "exp_speedup": 1.5,
+    "baseline_priority": 0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 2,
+    "offset": 0,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "151",
+    "exp_speedup": 3.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 2,
+    "offset": 1,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "152",
+    "exp_speedup": 3.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 2,
+    "offset": 0,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "153",
+    "exp_speedup": 3.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 2,
+    "offset": 1,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "154",
+    "exp_speedup": 3.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 3,
+    "offset": 0,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "155",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 3,
+    "offset": 1,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "156",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 3,
+    "offset": 2,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "157",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 3,
+    "offset": 0,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "158",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 3,
+    "offset": 1,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "159",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 3,
+    "offset": 2,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "160",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 0,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "161",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 1,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "162",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 2,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "163",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 3,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "164",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 0,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "165",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 1,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "166",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 2,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "167",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 3,
+    "use_fp16": true,
+    "class": "PerforateConv2dStride",
+    "name": "168",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 2,
+    "skip_offset": 0,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "261",
+    "exp_speedup": 3.0,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 2,
+    "skip_offset": 1,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "262",
+    "exp_speedup": 3.0,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 3,
+    "skip_offset": 0,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "263",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 3,
+    "skip_offset": 1,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "264",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 3,
+    "skip_offset": 2,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "265",
+    "exp_speedup": 2.25,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 0,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "266",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 1,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "267",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 2,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "268",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 3,
+    "interp_rate": 1.0,
+    "use_fp16": true,
+    "class": "Conv2dSampling",
+    "name": "269",
+    "exp_speedup": 2.0,
+    "devices": ["gpu"]
+},
+{
+    "direction_is_row": false,
+    "stride": 2,
+    "offset": 0,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "121",
+    "exp_speedup": 3.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 2,
+    "offset": 1,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "122",
+    "exp_speedup": 3.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 2,
+    "offset": 0,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "123",
+    "exp_speedup": 3.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 2,
+    "offset": 1,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "124",
+    "exp_speedup": 3.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 3,
+    "offset": 0,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "125",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 3,
+    "offset": 1,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "126",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 3,
+    "offset": 2,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "127",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 3,
+    "offset": 0,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "128",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 3,
+    "offset": 1,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "129",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 3,
+    "offset": 2,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "130",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 0,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "131",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 1,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "132",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 2,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "133",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": false,
+    "stride": 4,
+    "offset": 3,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "134",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 0,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "135",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 1,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "136",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 2,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "137",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "direction_is_row": true,
+    "stride": 4,
+    "offset": 3,
+    "use_fp16": false,
+    "class": "PerforateConv2dStride",
+    "name": "138",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 2,
+    "skip_offset": 0,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "231",
+    "exp_speedup": 3.0,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 2,
+    "skip_offset": 1,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "232",
+    "exp_speedup": 3.0,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 3,
+    "skip_offset": 0,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "233",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 3,
+    "skip_offset": 1,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "234",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 3,
+    "skip_offset": 2,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "235",
+    "exp_speedup": 2.25,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 0,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "236",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 1,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "237",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 2,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "238",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}, {
+    "skip_every": 4,
+    "skip_offset": 3,
+    "interp_rate": 1.0,
+    "use_fp16": false,
+    "class": "Conv2dSampling",
+    "name": "239",
+    "exp_speedup": 2.0,
+    "devices": ["cpu"]
+}]
