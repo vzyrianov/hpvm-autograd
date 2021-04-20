@@ -1,0 +1,168 @@
+#include <fstream>
+#include <string>
+#include <array>
+#include <hpvm.h>
+#include <tensorUtils.h>
+
+// For writing binary to file descriptors
+#include <cstdio>
+// For printing error
+#include <errno.h>
+#include <unistd.h>
+
+const int batch_size = {{batch_size}}, input_size = {{input_size}}, batch_count = input_size / batch_size;
+
+/**** Routines for Handling Piped Execution ***/
+
+FILE *open_fifo(const char *path, const char *mode) {
+  auto* fd = fopen(path, mode);
+  if (!fd) {
+    std::cerr << "Error opening FIFO file: " << strerror(errno) << '\n';
+    abort();
+  }
+  return fd;
+}
+
+int fifo_wait() {
+  auto* fp = open_fifo("{{fifo_path_r}}", "r");
+  const int maxn = 100;
+  char linebuf[maxn];
+  fgets(linebuf, maxn, fp);
+  fclose(fp);
+  std::string line(linebuf);
+  if (line == "test")
+    return 1;
+  if (line == "tune")
+    return 2;
+  if (line == "stop")
+    return 0;
+  std::cerr << "Invalid fifo file content \"" << line << "\"\n";
+  abort();
+}
+
+void fifo_write_batch(FILE *fp, void *output_ptr) {
+  auto *output = (Tensor *) output_ptr;
+  const auto &dim = output->dims;
+  size_t num_dims = dim.num_dims;
+  fwrite(&num_dims, sizeof(size_t), 1, fp);
+  fwrite(dim.dim_sizes, sizeof(size_t), dim.num_dims, fp);
+  fwrite(output->host_data, 1, output->size_in_bytes, fp);
+}
+
+void write_accuracy(float accuracy) {
+  std::ofstream fout("final_accuracy");
+  fout << std::fixed << accuracy;
+}
+
+{% for node in nodes %}
+void var_{{node.idx}}_node(
+{%- for n in range(node.input_size) -%}
+void *t{{n}}, size_t bytes_t{{n}}{{", " if not loop.last}}
+{%- endfor %}) {
+  __hpvm__hint(hpvm::{{target.upper()}}_TARGET);
+  __hpvm__attributes({{node.input_size}}, {% for n in range(node.input_size) -%}
+t{{n}}{{", " if not loop.last}}
+{%- endfor %}, 0);
+  __hpvm__node_id({{node.idx + 1}});
+  void *r = {{node.call_name}}({% for n in range(node.input_size) -%}
+t{{n}}{{", " if not loop.last}}
+{%- endfor %}{{", " if node.call_args}}{{node.call_args|join(", ")}});
+  __hpvm__return(2, r, (size_t) 0);
+}
+
+{% endfor -%}
+
+void root({%- for n in root_inputs -%}
+void *{{n}}, size_t {{n}}_bytes{{", " if not loop.last}}
+{%- endfor %}) {
+  __hpvm__hint(hpvm::CPU_TARGET);
+  __hpvm__attributes({{root_inputs|length}}, {% for n in root_inputs -%}
+{{n}}{{", " if not loop.last}}
+{%- endfor %}, 0);
+
+{% for node in nodes %}
+  void* var_{{node.idx}} = __hpvm__createNodeND(0, var_{{node.idx}}_node);
+{% for edge in node.edges %}
+{% if edge.is_bindin %}
+  __hpvm__bindIn(var_{{node.idx}}, {{edge.input_idx * 2}}, {{edge.edge_idx * 2}}, 0);
+  __hpvm__bindIn(var_{{node.idx}}, {{edge.input_idx * 2 + 1}}, {{edge.edge_idx * 2 + 1}}, 0);
+{% else %}
+  __hpvm__edge(var_{{edge.input_node}}, var_{{node.idx}}, 1, 0, {{edge.edge_idx * 2}}, 0);
+  __hpvm__edge(var_{{edge.input_node}}, var_{{node.idx}}, 1, 1, {{edge.edge_idx * 2 + 1}}, 0);
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+  __hpvm__bindOut(var_{{root_output_idx}}, 0, 0, 0);
+  __hpvm__bindOut(var_{{root_output_idx}}, 1, 1, 0);
+}
+
+struct ret_t {
+  void* tensor;
+  size_t bytes;
+};
+
+typedef struct __attribute__((__packed__)) {
+{% for n in root_inputs %}
+  void *{{n}};
+  size_t {{n}}_bytes;
+{% endfor %}
+  struct ret_t r;
+} RootIn;
+
+int main(){
+  std::string dir_prefix = "{{prefix}}/";
+  std::string test_input = dir_prefix + "test_input.bin";
+  std::string test_labels = dir_prefix + "test_labels.bin";
+  std::string tune_input = dir_prefix + "tune_input.bin";
+  std::string tune_labels = dir_prefix + "tune_labels.bin";
+
+{% for w in weights %}
+  std::string {{w.name}}_path = dir_prefix + "{{w.filename}}";
+  void* {{w.name}} = readTrainedWeights({{w.name}}_path.c_str(), 0, {{w.shape|join(', ')}});
+{% endfor %}
+
+  RootIn* args = static_cast<RootIn*>(malloc(sizeof(RootIn)));
+{% for n in root_inputs %}
+{% if n != input_name %}
+  args->{{n}} = {{n}};
+  args->{{n}}_bytes = 0;
+{% endif %}
+{% endfor %}
+
+  int ret = 0;
+  while ((ret = fifo_wait())) {
+    __hpvm__init();
+    startMemTracking();
+    const auto *input_pth = (ret == 1 ? test_input : tune_input).c_str();
+    const auto *labels_pth = (ret == 1 ? test_labels : tune_labels).c_str();
+
+    // Keep this open so the other side knows we have more batches to write
+    auto* fp = open_fifo("{{fifo_path_w}}", "wb");
+    float total_accuracy = 0;
+#pragma clang loop unroll(disable)
+    for (int i = 0; i < batch_count; i++){
+      int start = i * batch_size, end = start + batch_size;
+      void *{{input_name}} = readInputBatch(input_pth, 0, start, end, {{input_shape|join(', ')}});
+      args->input = {{input_name}};
+      args->input_bytes = 0;
+
+      void* dfg = __hpvm__launch(0, root, (void*) args);
+      __hpvm__wait(dfg);
+      void *result = static_cast<RootIn*>(args)->r.tensor;
+      hpvm_request_tensor(result, 0);
+
+      uint32_t* labels = readLabelsBatch3(labels_pth, start, end);
+      float accuracy = computeAccuracy3(labels, result);
+      total_accuracy += accuracy * batch_size;
+
+      fifo_write_batch(fp, result);
+      freeBatchMemory();
+    }
+    write_accuracy(total_accuracy / input_size);
+    fclose(fp);
+    __hpvm__cleanup();
+  }
+
+  return 0;
+}

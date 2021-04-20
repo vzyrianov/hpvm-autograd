@@ -1,0 +1,419 @@
+1114.3009809999999
++++++
+conf1 1 1 84.98 0.0
+1 gpu conv fp32 11 add fp32 1 tanh fp32 1
+2 gpu conv fp32 11 add fp32 1 tanh fp32 1 pool_max fp32 1
+3 gpu conv fp32 11 add fp32 1 tanh fp32 1
+4 gpu conv fp32 11 add fp32 1 tanh fp32 1 pool_max fp32 1
+5 gpu conv fp32 11 add fp32 1 tanh fp32 1
+6 gpu conv fp32 11 add fp32 1 tanh fp32 1 pool_max fp32 1
+7 gpu mul fp32 11 add fp32 1
+8 gpu softmax fp32 1
+-----
++++++
+conf2 2.4248748377353113 2.0815908534183163 84.5 0.480000000000004
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv fp16 12 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf3 2.4055188425519614 2.0586265720811823 84.48 0.5
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 269 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf4 2.4156140842962985 2.0617867479342706 84.28 0.7000000000000028
+1 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 267 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 163 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf5 2.396416918342732 2.0506214971794585 84.02 0.960000000000008
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 151 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv fp16 12 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf6 2.463002582910052 2.1171077568609458 83.84 1.1400000000000006
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 167 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf7 2.360283215266004 2.0255245321874304 83.78 1.2000000000000028
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv fp16 12 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf8 2.4140791541736157 2.0671513522247653 83.74000000000001 1.2399999999999949
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 267 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf9 2.457753689612079 2.1086250651240137 83.7 1.2800000000000011
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 163 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf10 2.459170454055443 2.1111925341396343 83.7 1.2800000000000011
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 164 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf11 2.4135986141645764 2.060453960420927 83.62 1.3599999999999994
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 267 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf12 2.4631278039012106 2.1092094797926637 83.58 1.4000000000000057
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf13 2.535761391794481 2.16998336112692 83.58 1.4000000000000057
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf14 2.289006193945062 1.961240158652051 83.54 1.4399999999999977
+1 gpu conv perf_fp16 167 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 155 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf15 2.4257674844112573 2.0808440756495563 83.5 1.480000000000004
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv fp16 12 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 261 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 161 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf16 2.458122368488622 2.109531159729078 83.48 1.5
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 162 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf17 2.281072202152105 1.9539314420536427 83.46000000000001 1.519999999999996
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf18 2.4572171342078444 2.1088933553775697 83.46000000000001 1.519999999999996
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 163 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf19 2.3017607719030058 1.9782265708150768 83.42 1.5600000000000023
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 162 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 261 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 162 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf20 2.379206814483014 2.047909200292713 83.39999999999999 1.5800000000000125
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv fp16 12 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 151 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf21 2.4636282705302537 2.1162281156388527 83.39999999999999 1.5800000000000125
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf22 2.461590101374146 2.1108493881199184 83.22 1.7600000000000051
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 161 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf23 2.537054645442804 2.167568834938183 83.22 1.7600000000000051
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf24 2.4631604723407885 2.1099694757102845 83.17999999999999 1.8000000000000114
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 267 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf25 2.4636282705302537 2.1162281156388527 83.14 1.8400000000000034
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf26 2.462588899729088 2.109477918791931 83.14 1.8400000000000034
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf27 2.4638085754689025 2.1071960926343603 83.1 1.8800000000000097
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf28 2.4640079766123635 2.110326453157297 83.08 1.9000000000000057
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 261 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv fp16 12 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf29 2.459337622764853 2.107249218450713 83.06 1.9200000000000017
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 162 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf30 2.538176340059405 2.173287257415721 83.02000000000001 1.9599999999999937
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 261 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 164 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf31 2.3905426931959846 2.044333576277581 83.02000000000001 1.9599999999999937
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 261 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf32 2.459337622764853 2.107249218450713 83.0 1.980000000000004
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 162 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf33 2.458968579288317 2.1063450826631396 82.89999999999999 2.0800000000000125
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 266 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 163 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf34 2.2912974651603877 1.9670210508860688 82.8 2.180000000000007
+1 gpu conv perf_fp16 168 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 155 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf35 2.4648489763056327 2.113931670664391 82.66 2.3200000000000074
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf36 2.4599076869402854 2.1077397371200193 82.6 2.3800000000000097
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 153 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 267 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 162 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf37 2.4636282705302537 2.1162281156388527 82.54 2.4399999999999977
+1 gpu conv fp16 11 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 268 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 160 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----
++++++
+conf38 2.591814267389778 2.222680944458784 82.26 2.719999999999999
+1 gpu conv fp16 12 add fp16 1 tanh fp16 1
+2 gpu conv perf_fp16 154 add fp16 1 tanh fp16 1 pool_max fp16 1
+3 gpu conv samp_fp16 261 add fp16 1 tanh fp16 1
+4 gpu conv samp_fp16 262 add fp16 1 tanh fp16 1 pool_max fp16 1
+5 gpu conv fp16 12 add fp16 1 tanh fp16 1
+6 gpu conv perf_fp16 157 add fp16 1 tanh fp16 1 pool_max fp16 1
+7 gpu mul fp16 12 add fp16 1
+8 gpu softmax fp32 1
+-----

@@ -1,0 +1,2 @@
+RUN: test_frontend.py vgg16_imagenet
+RUN: check_dnn_acc.py final_accuracy vgg16_imagenet

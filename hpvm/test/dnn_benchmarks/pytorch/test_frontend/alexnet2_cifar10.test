@@ -1,0 +1,2 @@
+RUN: test_frontend.py alexnet2_cifar10
+RUN: check_dnn_acc.py final_accuracy alexnet2_cifar10

@@ -1,0 +1,504 @@
+{
+    "11": {
+        "speedup": 1.0,
+        "applies_to": null,
+        "baseline_priority": 1,
+        "devices": [
+            "cpu"
+        ]
+    },
+    "12": {
+        "speedup": 1.5,
+        "applies_to": null,
+        "baseline_priority": 0,
+        "devices": [
+            "gpu"
+        ]
+    },
+    "121": {
+        "speedup": 2,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "122": {
+        "speedup": 2,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "123": {
+        "speedup": 2,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "124": {
+        "speedup": 2,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "125": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "126": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "127": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "128": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "129": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "130": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "131": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "132": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "133": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "134": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "135": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "136": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "137": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "138": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "231": {
+        "speedup": 2,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "232": {
+        "speedup": 2,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "233": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "234": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "235": {
+        "speedup": 1.5,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "236": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "237": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "238": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "239": {
+        "speedup": 1.33,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "cpu"
+        ]
+    },
+    "151": {
+        "speedup": 3.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "152": {
+        "speedup": 3.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "153": {
+        "speedup": 3.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "154": {
+        "speedup": 3.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "155": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "156": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "157": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "158": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "159": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "160": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "161": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "162": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "163": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "164": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "165": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "166": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "167": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "168": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "261": {
+        "speedup": 3.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "262": {
+        "speedup": 3.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "263": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "264": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "265": {
+        "speedup": 2.25,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "266": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "267": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "268": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    },
+    "269": {
+        "speedup": 2.0,
+        "applies_to": [
+            "convolution"
+        ],
+        "devices": [
+            "gpu"
+        ]
+    }
+}

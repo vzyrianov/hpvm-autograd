@@ -1,0 +1,2 @@
+add_llvm_tool_subdirectory(hpvm-config)
+add_llvm_tool_subdirectory(hpvm-clang)

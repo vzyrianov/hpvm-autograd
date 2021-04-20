@@ -1,0 +1,2 @@
+RUN: test_frontend.py resnet18_cifar10
+RUN: check_dnn_acc.py final_accuracy resnet18_cifar10

@@ -1,0 +1,6 @@
+RUN: rm -rf alexnet_imagenet && mkdir alexnet_imagenet && cd alexnet_imagenet
+RUN: python3 $DIR_PREFIX/alexnet_imagenet.py hpvm_reload frontend compile compile_tuner
+RUN: src/alexnet_imagenet_src/HPVM_binary
+RUN: check_dnn_acc.py final_accuracy alexnet_imagenet
+RUN: cd ..
+RUN: rm -r alexnet_imagenet

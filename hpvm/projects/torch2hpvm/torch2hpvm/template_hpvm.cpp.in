@@ -1,0 +1,128 @@
+#include <string>
+#include <hpvm.h>
+#include <tensorUtils.h>
+
+{% for node in nodes %}
+void var_{{node.idx}}_node(
+{%- for n in range(node.input_size) -%}
+void *t{{n}}, size_t bytes_t{{n}}{{", " if not loop.last}}
+{%- endfor %}) {
+  __hpvm__hint(hpvm::{{target.upper()}}_TARGET);
+  __hpvm__attributes({{node.input_size}}, {% for n in range(node.input_size) -%}
+t{{n}}{{", " if not loop.last}}
+{%- endfor %}, 0);
+  __hpvm__node_id({{node.idx + 1}});
+  void *r = {{node.call_name}}({% for n in range(node.input_size) -%}
+t{{n}}{{", " if not loop.last}}
+{%- endfor %}{{", " if node.call_args}}{{node.call_args|join(", ")}});
+  __hpvm__return(2, r, (size_t) 0);
+}
+
+{% endfor -%}
+
+void root({%- for n in root_inputs -%}
+void *{{n}}, size_t {{n}}_bytes{{", " if not loop.last}}
+{%- endfor %}) {
+  __hpvm__hint(hpvm::CPU_TARGET);
+  __hpvm__attributes({{root_inputs|length}}, {% for n in root_inputs -%}
+{{n}}{{", " if not loop.last}}
+{%- endfor %}, 0);
+
+{% for node in nodes %}
+  void* var_{{node.idx}} = __hpvm__createNodeND(0, var_{{node.idx}}_node);
+{% for edge in node.edges %}
+{% if edge.is_bindin %}
+  __hpvm__bindIn(var_{{node.idx}}, {{edge.input_idx * 2}}, {{edge.edge_idx * 2}}, 0);
+  __hpvm__bindIn(var_{{node.idx}}, {{edge.input_idx * 2 + 1}}, {{edge.edge_idx * 2 + 1}}, 0);
+{% else %}
+  __hpvm__edge(var_{{edge.input_node}}, var_{{node.idx}}, 1, 0, {{edge.edge_idx * 2}}, 0);
+  __hpvm__edge(var_{{edge.input_node}}, var_{{node.idx}}, 1, 1, {{edge.edge_idx * 2 + 1}}, 0);
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+  __hpvm__bindOut(var_{{root_output_idx}}, 0, 0, 0);
+  __hpvm__bindOut(var_{{root_output_idx}}, 1, 1, 0);
+}
+
+struct ret_t {
+  void* tensor;
+  size_t bytes;
+};
+
+typedef struct __attribute__((__packed__)) {
+{% for n in root_inputs %}
+  void *{{n}};
+  size_t {{n}}_bytes;
+{% endfor %}
+  struct ret_t r;
+} RootIn;
+
+void printUsage(const std::string &bin_name) {
+  std::cerr << "Usage: " << bin_name << "[-d {test|tune}] [-c CONF_FILE]\n";
+}
+
+const int batch_size = {{batch_size}}, input_size = {{input_size}}, batch_count = input_size / batch_size;
+
+int main(int argc, char *argv[]) {
+  std::string config_path = "", runtype = "test";
+  int flag;
+  while ((flag = getopt(argc, argv, "hc:")) != -1) {
+    switch (flag) {
+    case 'd':
+      runtype = std::string(optarg);
+      if (runtype != "test" && runtype != "tune")
+        printUsage(argv[0]);
+        return 1;
+      break;
+    case 'c':
+      config_path = std::string(optarg);
+      break;
+    case 'h':
+      printUsage(argv[0]);
+      return 0;
+    default:
+      printUsage(argv[0]);
+      return 1;
+    }
+  }
+
+  std::string dir_prefix = "{{prefix}}/";
+  std::string input_path = dir_prefix + "test_input.bin";
+  std::string labels_path = dir_prefix + "test_labels.bin";
+{% for w in weights %}
+  std::string {{w.name}}_path = dir_prefix + "{{w.filename}}";
+  void* {{w.name}} = readTrainedWeights({{w.name}}_path.c_str(), 0, {{w.shape|join(', ')}});
+{% endfor %}
+
+  RootIn* args = static_cast<RootIn*>(malloc(sizeof(RootIn)));
+  void* {{input_name}} = create4DTensor(0, nchw, batch_size, {{input_shape|join(', ')}});
+{% for n in root_inputs %}
+  args->{{n}} = {{n}};
+  args->{{n}}_bytes = 0;
+{% endfor %}
+
+  __hpvm__init();
+  if (config_path != "") {
+    llvm_hpvm_initializeRuntimeController(config_path.c_str());
+  }
+
+  startMemTracking();
+#pragma clang loop unroll(disable)
+  for (int i = 0; i < batch_count; i++){
+    int start = i * batch_size, end = start + batch_size;
+    void *{{input_name}} = readInputBatch(input_path.c_str(), 0, start, end, {{input_shape|join(', ')}});
+    args->{{input_name}} = {{input_name}};
+    args->{{input_name}}_bytes = 0;
+
+    void* dfg = __hpvm__launch(0, root, (void*) args);
+    __hpvm__wait(dfg);
+    void *result = static_cast<RootIn*>(args)->r.tensor;
+    hpvm_request_tensor(result, 0);
+
+    llvm_hpvm_invokeRtControl(result, labels_path.c_str(), start, end);
+    freeBatchMemory();
+  }
+  __hpvm__cleanup();
+  return 0;
+}

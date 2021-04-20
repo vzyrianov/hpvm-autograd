@@ -1,0 +1,2 @@
+RUN: test_frontend.py lenet_mnist
+RUN: check_dnn_acc.py final_accuracy lenet_mnist

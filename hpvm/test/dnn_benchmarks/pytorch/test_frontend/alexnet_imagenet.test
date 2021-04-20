@@ -1,0 +1,2 @@
+RUN: test_frontend.py alexnet_imagenet
+RUN: check_dnn_acc.py final_accuracy alexnet_imagenet

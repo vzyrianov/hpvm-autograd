@@ -1,0 +1,2 @@
+RUN: test_frontend.py vgg16_cifar10
+RUN: check_dnn_acc.py final_accuracy vgg16_cifar10

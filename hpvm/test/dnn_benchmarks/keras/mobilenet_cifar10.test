@@ -1,0 +1,6 @@
+RUN: rm -rf mobilenet_cifar10 && mkdir mobilenet_cifar10 && cd mobilenet_cifar10
+RUN: python3 $DIR_PREFIX/mobilenet_cifar10.py hpvm_reload frontend compile compile_tuner
+RUN: src/mobilenet_cifar10_src/HPVM_binary
+RUN: check_dnn_acc.py final_accuracy mobilenet_cifar10
+RUN: cd ..
+RUN: rm -r mobilenet_cifar10

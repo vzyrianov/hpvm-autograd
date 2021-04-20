@@ -1,0 +1,6 @@
+RUN: rm -rf resnet18_cifar10 && mkdir resnet18_cifar10 && cd resnet18_cifar10
+RUN: python3 $DIR_PREFIX/resnet18_cifar10.py keras_reload frontend compile compile_tuner
+RUN: src/resnet18_cifar10_src/HPVM_binary
+RUN: check_dnn_acc.py final_accuracy resnet18_cifar10
+RUN: cd ..
+RUN: rm -r resnet18_cifar10

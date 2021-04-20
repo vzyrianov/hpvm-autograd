@@ -1,0 +1,15 @@
+# Add all entries automatically except hpvm-tensor-rt
+file(GLOB entries *)
+foreach(entry ${entries})
+  if(IS_DIRECTORY ${entry} AND EXISTS ${entry}/CMakeLists.txt)
+    if(NOT ${entry} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR}/hpvm-tensor-rt)
+      get_filename_component(entry_name "${entry}" NAME)
+      add_llvm_external_project(${entry_name})
+    endif()
+  endif()
+endforeach(entry)
+
+# Add hpvm-tensor-rt only if CUDA is found (HPVM_USE_CUDA is set to 1)
+if(HPVM_USE_CUDA)
+  add_llvm_external_project(hpvm-tensor-rt)
+endif()

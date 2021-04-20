@@ -1,0 +1,2 @@
+RUN: test_frontend.py resnet50_imagenet
+RUN: check_dnn_acc.py final_accuracy resnet50_imagenet

@@ -1,0 +1,60 @@
+#include <chrono>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include "tensor_runtime.h"
+#include "utils.h"
+
+int main(int argc, char *argv[]){
+  if (argc != 2) {
+    std::cout << "Usage: " << argv[0] << " {tune|test}\n";
+    return 1;
+  }
+  std::string arg1 = argv[1];
+  if (arg1 != "tune" && arg1 != "test") {
+    std::cout << "Usage: " << argv[0] << " {tune|test}\n";
+    return 1;
+  }
+
+  std::string dir_prefix = "{{prefix}}/";
+  std::string input_path = dir_prefix + arg1 + "_input.bin";
+  std::string labels_path = dir_prefix + arg1 + "_labels.bin";
+{% for w in weights %}
+  std::string {{w.name}}_path = dir_prefix + std::string("{{w.filename}}");
+  void* {{w.name}} = readTrainedWeights({{w.name}}_path.c_str(), 0, {{w.shape|join(', ')}});
+{% endfor %}
+
+  llvm_hpvm_initTensorRt(0);
+  startMemTracking();
+
+  int test_input_size = {{input_shape[0]}};
+  int batch_size = {{input_shape[0]}};
+  // # FIXME: Ceiling for batch_count
+  int batch_count = test_input_size / batch_size;
+  float final_accuracy = 0.0;
+
+  for (int i = 0; i < batch_count; i++) {
+    int start = i * batch_size;
+    int end = (i + 1) * batch_size;
+    void *{{input}} = readInputBatch(input_path.c_str(), 0, start, end, {{input_shape|join(', ')}});
+
+{% for code in graph_code %}
+    auto {{code.output}} = {{code.function}}({{code.inputs|join(', ')}});
+{% endfor %}
+    
+    uint32_t* labels = readLabelsBatch3(labels_path.c_str(), start, end);
+    float accuracy = computeAccuracy3(labels, {{output}});
+    final_accuracy += accuracy;
+    freeBatchMemory();
+  }
+
+  final_accuracy = final_accuracy / batch_count;
+  dumpFinalAccuracy(final_accuracy);
+  llvm_hpvm_cleanupTensorRt();
+  return 0;
+}

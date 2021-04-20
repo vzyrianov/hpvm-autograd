@@ -1,0 +1,6 @@
+RUN: rm -rf vgg16_cifar100 && mkdir vgg16_cifar100 && cd vgg16_cifar100
+RUN: python3 $DIR_PREFIX/vgg16_cifar100.py hpvm_reload frontend compile compile_tuner
+RUN: src/vgg16_cifar100_src/HPVM_binary
+RUN: check_dnn_acc.py final_accuracy vgg16_cifar100
+RUN: cd ..
+RUN: rm -r vgg16_cifar100
