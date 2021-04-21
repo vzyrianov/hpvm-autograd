@@ -184,6 +184,9 @@ IS_HPVM_CALL(tensor_tanh)
 IS_HPVM_CALL(tensor_sigmoid)
 IS_HPVM_CALL(tensor_softmax)
 
+//__hpvm_grad(root, input_index)
+IS_HPVM_CALL(grad)
+
 IS_HPVM_CALL(node_id)
 
 // Return the constant integer represented by value V
