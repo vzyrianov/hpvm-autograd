@@ -3,14 +3,6 @@
 #include <tensorUtils.h>
 #include <config.h>
 
-#ifndef MODEL_PARAMS_DIR
-#error MODEL_PARAMS_DIR is not defined
-#endif
-
-#define STR_VALUE(X) #X
-#define STRINGIFY(X) STR_VALUE(X)
-#define MODEL_PARAMS_DIR_STR STRINGIFY(MODEL_PARAMS_DIR)
-
 void var_0_node(void *t1, size_t bytes_t1, void *t2, size_t bytes_t2) {
    __hpvm__hint(hpvm::TENSOR_TARGET);
    __hpvm__attributes(2, t1, t2, 0);
