@@ -100,6 +100,8 @@ int main(int argc, char *argv[]) {
    {
       Tensor* tensorOutput = static_cast<Tensor*>(result);
       float* data = (float*) tensorOutput->host_data;
+      std::cout << "num_elems " << tensorOutput->num_elems << std::endl;
+      std::cout << "size_in_bytes" << tensorOutput->size_in_bytes << std::endl;
       std::cout << "Output of tensor " << data[0] << " " << data[1] << " " << data[2] << " " << data[3] << std::endl;
    }
 
