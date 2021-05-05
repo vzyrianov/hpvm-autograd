@@ -652,12 +652,19 @@ void FuseHPVMTensorNodes::updateParentNodeFunction(IntrinsicInst *II1,
   IItoRemove.clear();
 
   // Then, iterate over uses of the second node's createNode intrinsic
-  for (Value::user_iterator i = II2->user_begin(), ie = II2->user_end();
-       i != ie; ++i) {
+  // List all the IntrinsicInst users into `IIs` first, because it's unsafe to
+  // traverse the users while making changes to the users
+  // (we caught a bug here).
+  std::vector<IntrinsicInst *> IIs;
+  for (auto i = II2->user_begin(), ie = II2->user_end(); i != ie; ++i) {
+
     Instruction *VI = dyn_cast<Instruction>(*i);
     IntrinsicInst *II = dyn_cast<IntrinsicInst>(VI);
     assert(II && "Use of a node handle outside of a hpvm intrinsic\n");
-
+    IIs.push_back(II);
+  }
+  
+  for (auto *II: IIs) {
     switch (II->getIntrinsicID()) {
     case Intrinsic::hpvm_createEdge: {
       assert(isOutgoingEdgeIntrinsic(II, II2) &&
