@@ -11,8 +11,8 @@ LLVM_BUILD_BIN = Path("@LLVM_BUILD_DIR@") / "bin"
 
 # Directories to include
 INCLUDE_DIRS = "@INCLUDE_DIRS@".split(";")
-LINK_DIRS = [Path(s) for s in "@LINK_DIRS@".split(";")]
-LINK_LIBS = "@LINK_LIBS@".split(";")
+# TODO: This dependency comes from hpvm-rt. Should have CMake inject this instead.
+LINK_LIBS = ["pthread"]
 DIRECT_LINK_LIBS = "@DIRECT_LINK_LIBS@".split(";")
 HPVM_USE_OPENCL = int("@HPVM_USE_OPENCL@")
 HPVM_HAS_TRT = int("@HPVM_HAS_TRT@")
@@ -30,7 +30,7 @@ def compile_hpvm_c(
     include: List[PathLike] = None,
     macro: List[str] = None,
     flags: List[str] = None,
-    optim_level: str = "0",  # -O0
+    optim_level: str = "1",  # -O1
     is_cpp: bool = True,  # otherwise is C
     std: str = None,  # language std (-std=c++11)
     link_dirs: List[PathLike] = None,
@@ -52,6 +52,9 @@ def compile_hpvm_c(
             "inplace", "hpvm-fuse", "dfg2llvm-wrapperapi",
             f"configuration-inputs-filename={conf_file}"
         ]
+    elif tensor_target == "grad":
+        passes += ["LLVMInPlaceDFGAnalysis", "LLVMDFG2LLVM_Grad"]
+        pass_flags += ["inplace", "dfg2llvm-grad"]
     elif tensor_target == "cudnn":
         passes += ["LLVMInPlaceDFGAnalysis", "LLVMDFG2LLVM_CUDNN"]
         pass_flags += ["inplace", "dfg2llvm-cudnn"]
@@ -98,7 +101,7 @@ def hpvm_c_to_ll(
     extra_includes: List[PathLike] = None,
     macros: List[str] = None,
     flags: List[str] = None,
-    optim_level: str = "0",  # -O0
+    optim_level: str = "1",  # -O1
     is_cpp: bool = True,  # otherwise is C
     std: str = None,  # --std=c++11
 ) -> List[str]:
@@ -110,9 +113,9 @@ def hpvm_c_to_ll(
         flags.append(f"-std={std}")
     clang = "clang++" if is_cpp else "clang"
     return [
-        str(LLVM_BUILD_BIN / clang), *includes_s, *flags, *macros,
-        f"-O{optim_level}", "-emit-llvm", "-S",
-        str(src_file), "-o", str(target_file)
+        str(LLVM_BUILD_BIN / clang), f"-O{optim_level}",
+        *includes_s, *flags, *macros,
+        "-emit-llvm", "-S", str(src_file), "-o", str(target_file)
     ]
 
 
@@ -131,32 +134,29 @@ def link_binary(
     extra_link_dirs: List[PathLike] = None,
     extra_link_libs: List[str] = None
 ) -> List[str]:
-    link_dirs, link_libs = _link_args(extra_link_dirs or [], extra_link_libs or [])
+    link_dirs, link_libnames = _parse_direct_link_libs()
+    link_dirs += (extra_link_dirs or [])
+    link_libstems = (extra_link_libs or []) + LINK_LIBS
+
     linker_dir_flags = []
     for path in link_dirs:
         linker_dir_flags.extend([f"-L{path}", f"-Wl,-rpath={path}"])
-    linker_lib_flags = [f"-l{lib}" for lib in link_libs]
+    linker_lib_flags = (
+        [f"-l{lib}" for lib in link_libstems] +
+        [f"-l:{libname}" for libname in link_libnames]
+    )
     return [
         str(LLVM_BUILD_BIN / "clang++"), str(src_file),
         "-o", str(target_file), *linker_dir_flags, *linker_lib_flags
     ]
 
 
-def _link_args(extra_link_dirs: List[PathLike], extra_link_libs: List[str]):
-    def drop_suffix(libname: str):
-        import re
-
-        match = re.match(r"lib(.*)\.so", libname)
-        return libname if match is None else match.group(1)
-
-    link_dirs, link_libs = extra_link_dirs.copy(), extra_link_libs.copy()
+def _parse_direct_link_libs():
+    link_dirs, link_libnames = [], []
     for lib in DIRECT_LINK_LIBS:
         lib = Path(lib)
         link_dirs.append(lib.parent)
-        link_libs.append(lib.name)
-    link_dirs += LINK_DIRS
-    link_libs += LINK_LIBS
-    link_libnames = [drop_suffix(s) for s in link_libs]
+        link_libnames.append(lib.name)
     return link_dirs, link_libnames
 
 
@@ -201,7 +201,7 @@ See option -b for that."""
         "-t",
         "--tensor-target",
         type=str,
-        choices=["tensor", "cudnn"],
+        choices=["tensor", "cudnn", "grad"],
         help="Backend to use for tensor operators",
     )
     parser.add_argument(
