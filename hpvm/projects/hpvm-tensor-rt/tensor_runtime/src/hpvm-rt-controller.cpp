@@ -688,7 +688,6 @@ void RuntimeController::readConfigurationFile(const char *str) {
       firstTensorID += NodeConf->getApproxChoices().size();
 
     } else if (tokens[1] == "cpu") {
-      INFO("---------Found cpu configuration\n");
 
       // There must be at least one operation, with an approximation option
       CUSTOM_ASSERT((tokens.size() >= 5) &&
@@ -700,8 +699,7 @@ void RuntimeController::readConfigurationFile(const char *str) {
 
       InitialConfigurations.back().idConfigMap.insert(
           std::make_pair(firstTensorID, NodeConf));
-      INFO("*** firstTensorID = %d \n\n", firstTensorID);
-      INFO("FIXED CPU ID ISSUE\n");
+
       unsigned idx = 2;
       while (idx < tokens.size()) {
         if (tokens[idx] == "add") {
@@ -1193,7 +1191,7 @@ static int num_executations = 0;
 
 float hpvm_rt_computeAccuracy3(uint32_t *labels, void *result_ptr) {
 
-  struct Tensor *result = (struct Tensor *)result_ptr;
+  struct Tensor *result = (struct Tensor *) result_ptr;
 
   size_t batch_dim = result->dims.dim_sizes[0];
   size_t num_classes = result->dims.dim_sizes[1];
@@ -1206,6 +1204,7 @@ float hpvm_rt_computeAccuracy3(uint32_t *labels, void *result_ptr) {
 
     int chosen = 0;
     for (int id = 1; id < num_classes; ++id) {
+      //printf(" check = %f \n ",  data[i * num_classes + id]);
       if (data[i * num_classes + chosen] < data[i * num_classes + id])
         chosen = id;
     }

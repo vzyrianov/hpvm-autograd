@@ -10,7 +10,7 @@
  * Main entry of dense matrix-matrix multiplication kernel
  */
 
-#include "opencv2/ocl/ocl.hpp"
+#include "opencv2/core/ocl.hpp"
 #include "opencv2/opencv.hpp"
 #include <cassert>
 #include <hpvm.h>
@@ -747,7 +747,7 @@ void getNextFrame(VideoCapture &VC, Mat &F) {
   VC >> F;
   /// Convert the image to grayscale if image colored
   if (F.channels() == 3)
-    cvtColor(F, F, CV_BGR2GRAY);
+    cvtColor(F, F, COLOR_BGR2GRAY);
 
   F.convertTo(F, CV_32F, 1.0 / 255.0);
 }
@@ -775,12 +775,12 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  int NUM_FRAMES = cap.get(CV_CAP_PROP_FRAME_COUNT);
+  int NUM_FRAMES = cap.get(CAP_PROP_FRAME_COUNT);
   NUM_FRAMES = 600;
   std::cout << "Number of frames = " << NUM_FRAMES << "\n";
 
-  namedWindow(input_window, CV_WINDOW_AUTOSIZE);
-  namedWindow(output_window, CV_WINDOW_AUTOSIZE);
+  namedWindow(input_window, WINDOW_AUTOSIZE);
+  namedWindow(output_window, WINDOW_AUTOSIZE);
   moveWindow(input_window, POSX_IN, POSY_IN);
   moveWindow(output_window, POSX_OUT, POSY_OUT);
 

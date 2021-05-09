@@ -52,7 +52,7 @@ void *tensorAdd(void *x_ptr, void *bias_ptr) {
   Tensor *x = (Tensor *)x_ptr;
   Tensor *bias = (Tensor *)bias_ptr;
 
-  INFO("*** TensorAdd \n");
+  //INFO("*** TensorAdd \n");
   profileEvent("Add");
 
   float alpha = 1.0f;
@@ -85,7 +85,8 @@ void *tensorConvolution(void *input_ptr, void *filter_ptr, int vertical_pad,
                         int horizontal_pad, int vertical_stride,
                         int horizontal_stride, int conv_mode, int conv_groups) {
 
-  INFO("*** TensorConvolution \n");
+
+  //INFO("*** TensorConvolution \n");
   profileEvent("Conv");
 
   Tensor *input = (Tensor *)input_ptr;
@@ -213,7 +214,6 @@ void *tensorPooling(void *input_ptr, int poolFunction, int window_height,
                     int window_width, int vertical_pad, int horizontal_pad,
                     int vertical_stride, int horizontal_stride) {
 
-  INFO("*** TensorPooling \n");
   profileEvent("Pool");
 
   Tensor *input = (Tensor *)input_ptr;
@@ -272,7 +272,7 @@ void *tensorPooling(void *input_ptr, int poolFunction, int window_height,
  * https://gist.github.com/peterwittek/6303527 */
 void *tensorGemmGPU(void *lhs_ptr, void *rhs_ptr) {
 
-  INFO("*** TensorGemmGPU \n");
+  //INFO("*** TensorGemmGPU \n");
   profileEvent("Mul");
 
   Tensor *lhs = (Tensor *)lhs_ptr;
@@ -364,7 +364,7 @@ void *tensorRelu(void *input_ptr) {
 // Think: Should Softmax be broken into multiple IR operations?
 void *tensorSoftmax(void *input_ptr) {
 
-  INFO("*** TensorSoftmax \n");
+  //INFO("*** TensorSoftmax \n");
   profileEvent("Softmax");
 
   Tensor *input = (Tensor *)input_ptr;
@@ -386,7 +386,7 @@ void *tensorSoftmax(void *input_ptr) {
 
 void *tensorRelu2(void *input_ptr, float min, float max) {
 
-  INFO("*** TensorClippedRelu *** \n");
+  //INFO("*** TensorClippedRelu *** \n");
   profileEvent("Relu");
 
   cudnnActivationDescriptor_t reluDesc;
@@ -413,7 +413,7 @@ void *tensorRelu2(void *input_ptr, float min, float max) {
 
 void *tensorTanh(void *input_ptr) {
 
-  INFO("*** TensorTanh \n");
+  //INFO("*** TensorTanh \n");
   profileEvent("Tanh");
 
   Tensor *input = (Tensor *)input_ptr;
@@ -441,7 +441,7 @@ void *tensorTanh(void *input_ptr) {
 void *tensorBatchNorm(void *input_ptr, void *gamma_ptr, void *beta_ptr,
                       void *mean_ptr, void *variance_ptr, double epsilon) {
 
-  INFO("*** TensorBatchNorm \n");
+  // INFO("*** TensorBatchNorm \n");
   profileEvent("BatchNorm");
 
   Tensor *input = (Tensor *)input_ptr;
@@ -477,7 +477,7 @@ void *tensorBatchNorm(void *input_ptr, void *gamma_ptr, void *beta_ptr,
 // TODO: benchmark performance of tensorSplit
 void **tensorSplit(void *tensor_ptr, int num_splits, int split_dim) {
 
-  INFO("*** TensorSplit \n");
+  //INFO("*** TensorSplit \n");
   profileEvent("tensorSplit");
 
   Tensor *tensor = (Tensor *)tensor_ptr;
@@ -533,7 +533,7 @@ void **tensorSplit(void *tensor_ptr, int num_splits, int split_dim) {
 
 void *tensorConcat(void **tensors_ptr, int num_splits, int split_dim) {
 
-  INFO("*** TensorConcat \n");
+  //INFO("*** TensorConcat \n");
   profileEvent("tensorConcat");
 
   Tensor **tensors = (Tensor **)tensors_ptr;
@@ -595,7 +595,7 @@ void *tensorConcat(void **tensors_ptr, int num_splits, int split_dim) {
 void *tensorLRN(void *input_ptr, unsigned int LRN_window, double LRN_alpha,
                 double LRN_beta, double LRN_k) {
 
-  INFO("*** TensorLRN \n");
+  //INFO("*** TensorLRN \n");
   profileEvent("tensorLRN");
 
   Tensor *input = (Tensor *)input_ptr;

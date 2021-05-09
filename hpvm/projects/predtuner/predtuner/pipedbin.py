@@ -339,7 +339,7 @@ class HPVMConfigBuilder:
         merged_to_original = []
         while lhs < len(types):
             widx = 0
-            while widx < len(mm) and types[rhs] in mm[widx]:
+            while widx < len(mm) and rhs < len(types) and types[rhs] in mm[widx]:
                 rhs += 1
                 widx = rhs - lhs
             if rhs == lhs:

@@ -7,8 +7,8 @@
 # ---[ Define variables for main.py.in
 # main.py.in requires the following variables:
 # LLVM_PROJECT_DIR, LLVM_BUILD_DIR
-# INCLUDE_DIRS, LINK_DIRS, LINK_LIBS
-# DIRECT_LINK_LIBS, HPVM_USE_OPENCL (defined globally), HPVM_HAS_TRT
+# INCLUDE_DIRS, DIRECT_LINK_LIBS
+# HPVM_USE_OPENCL (defined globally), HPVM_HAS_TRT
 # AVAILABLE_PASSES, HPVM_RT_PATH
 
 set(LLVM_PROJECT_DIR ${CMAKE_SOURCE_DIR})
@@ -22,12 +22,8 @@ if(TARGET tensor_runtime)
   set(HPVM_HAS_TRT 1)  # Has tensor runtime
 
   get_target_property(TRT_INCLUDE_DIRS tensor_runtime INCLUDE_DIRECTORIES)
-  get_target_property(TRT_LINK_DIRS tensor_runtime TRT_LINK_DIRS)
-  get_target_property(TRT_LINK_LIBS tensor_runtime TRT_LINK_LIBS)
-
   list(APPEND INCLUDE_DIRS ${TRT_INCLUDE_DIRS})
-  list(APPEND LINK_DIRS ${TRT_LINK_DIRS})
-  list(APPEND LINK_LIBS ${TRT_LINK_LIBS})
+
   list(APPEND DIRECT_LINK_LIBS "$<TARGET_FILE:tensor_runtime>")
   list(APPEND DEPS tensor_runtime)
 else()
@@ -64,6 +60,7 @@ if(TARGET tensor_runtime)
     LLVMInPlaceDFGAnalysis
     LLVMDFG2LLVM_CUDNN
     LLVMDFG2LLVM_WrapperAPI
+    LLVMDFG2LLVM_Grad
   )
 endif()
 list(APPEND DEPS ${AVAILABLE_PASSES})

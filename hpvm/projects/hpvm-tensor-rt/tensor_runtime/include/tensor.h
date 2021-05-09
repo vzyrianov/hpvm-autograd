@@ -33,14 +33,11 @@ struct Tensor {
   int data_type;
   int cur_type;
   int data_format;
-  data_location_t
-      data_placement; // Maintains the location of the tensor {host, device...}
-  cudnnTensorDescriptor_t tensor_desc;
-  cudnnFilterDescriptor_t
-      filter_desc; // FIXIT: Rethink if this should be in tensor struct
-  cudnnTensorDescriptor_t tensor_half_desc;
-  cudnnFilterDescriptor_t
-      filter_half_desc; // FIXIT: Rethink if this should be in tensor struct
+  data_location_t  data_placement; // Maintains the location of the tensor {host, device...}
+  cudnnTensorDescriptor_t  tensor_desc;
+  cudnnFilterDescriptor_t  filter_desc; // FIXIT: Rethink if this should be in tensor struct
+  cudnnTensorDescriptor_t  tensor_half_desc;
+  cudnnFilterDescriptor_t  filter_half_desc; // FIXIT: Rethink if this should be in tensor struct
   void *host_data;
   void *gpu_data;       // Pointer to GPU FP32 data
   void *gpu_half_data;  // Pointer to GPU FP16 data

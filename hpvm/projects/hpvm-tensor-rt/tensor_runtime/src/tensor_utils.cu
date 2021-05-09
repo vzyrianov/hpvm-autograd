@@ -289,6 +289,7 @@ void *create3DTensor(int data_type, size_t dim1_size, size_t dim2_size,
 
 void *create4DTensor(int data_type, int data_format, size_t dim1_size,
                      size_t dim2_size, size_t dim3_size, size_t dim4_size) {
+  
   struct Tensor *tensor = (struct Tensor *)malloc(sizeof(Tensor));
   size_t num_elems = dim1_size * dim2_size * dim3_size * dim4_size;
   allocateMem(tensor, data_type, num_elems);
@@ -308,15 +309,16 @@ void *create4DTensor(int data_type, int data_format, size_t dim1_size,
   set4DFilterDescriptor(tensor, data_format, dim1_size, dim2_size, dim3_size,
                         dim4_size);
 
+  changeTensorPlacement(tensor, HOST);
+  
   return tensor;
 }
 
 void initTensorData(void *tensor_ptr, void *data_ptr, size_t size_in_bytes) {
 
-  Tensor *tensor = (Tensor *)tensor_ptr;
-
+  Tensor *tensor = (Tensor *) tensor_ptr;
   size_t host_size_in_bytes = tensor->num_elems * 4;
-  // if(tensor->size_in_bytes != size_in_bytes){
+
   if (host_size_in_bytes != size_in_bytes) {
     ERROR("The destination and source sizes don't match");
   }
@@ -330,29 +332,33 @@ void initTensorData(void *tensor_ptr, void *data_ptr, size_t size_in_bytes) {
 
 void hostToDeviceCopy(struct Tensor *tensor) {
 
+  DEBUG("** HostToDevice *** \n");
   if (tensor->data_placement != DEVICE) {
     cudaMemcpy(tensor->gpu_data, tensor->host_data, tensor->size_in_bytes,
                cudaMemcpyHostToDevice);
     DEBUG("Moving %d bytes from host to GPU \n", tensor->size_in_bytes);
     tensor->data_placement = DEVICE;
-  } else {
+  }
+  else {
     DEBUG("No data movement required - Data on Device \n");
   }
 }
 
 void deviceToHostCopy(struct Tensor *tensor) {
 
+  DEBUG("*** DeviceToHost *** ");
   if (tensor->data_placement != HOST) {
     cudaMemcpy(tensor->host_data, tensor->gpu_data, tensor->size_in_bytes,
                cudaMemcpyDeviceToHost);
     DEBUG("Moving %d bytes from GPU to host \n", tensor->size_in_bytes);
     tensor->data_placement = HOST;
-  } else {
+  }
+  else {
     DEBUG("No data movement required - Data on Host \n");
   }
 }
 
-// void tensorCopy(struct Tensor* srcTensor, struct Tensor* dstTensor){
+  
 
 void tensorCopy(void *srcTensor_ptr, void *dstTensor_ptr) {
 
@@ -364,7 +370,8 @@ void tensorCopy(void *srcTensor_ptr, void *dstTensor_ptr) {
            srcTensor->size_in_bytes);
     DEBUG("Moving %d bytes from host to host \n", srcTensor->size_in_bytes);
     dstTensor->data_placement = HOST;
-  } else if (srcTensor->data_placement == DEVICE) {
+  }
+  else if (srcTensor->data_placement == DEVICE) {
     cudaMemcpy(dstTensor->gpu_data, srcTensor->gpu_data,
                srcTensor->size_in_bytes, cudaMemcpyDeviceToDevice);
     DEBUG("Moving %d bytes from GPU to GPU \n", srcTensor->size_in_bytes);
@@ -382,7 +389,8 @@ void hpvm_request_tensor(void *tensor_ptr, int destination) {
                  cudaMemcpyDeviceToHost);
       DEBUG("Moving %d bytes from GPU to host \n", tensor->size_in_bytes);
       tensor->data_placement = HOST;
-    } else {
+    }
+    else {
       DEBUG("No data movement required - Data on Host \n");
     }
   }
@@ -394,7 +402,8 @@ void hpvm_request_tensor(void *tensor_ptr, int destination) {
                  cudaMemcpyHostToDevice);
       DEBUG("Moving %d bytes from host to GPU \n", tensor->size_in_bytes);
       tensor->data_placement = DEVICE;
-    } else {
+    }
+    else {
       DEBUG("No data movement required - Data on Device \n");
     }
   }

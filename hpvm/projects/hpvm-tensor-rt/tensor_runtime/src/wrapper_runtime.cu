@@ -75,9 +75,7 @@ extern "C" {
 
 
 
-
-void *
-wrapper_ConvLayer(const char *hpvm_node_id, void *input, void *filter,
+  void* wrapper_ConvLayer(const char *hpvm_node_id, void *input, void *filter,
                   void *bias, int conv_pad_h, int conv_pad_w, int conv_stride_h,
                   int conv_stride_w, int pool_id, int pool_size,
                   int activation_id,
@@ -123,7 +121,6 @@ wrapper_ConvLayer(const char *hpvm_node_id, void *input, void *filter,
     void *activation_out;
     switch (activation_id) {
     case -1: { // No activation
-      // INFO("No activation Function\n");
       activation_out = add_out;
     } break;
     case 0: { // TanH activation
@@ -204,7 +201,7 @@ wrapper_ConvLayer(const char *hpvm_node_id, void *input, void *filter,
 
       std::vector< std::pair< CPUNodeConfiguration::TENSOR_OP,
       			std::vector< std::pair<CPUNodeConfiguration::APPROX,
-      					       int> > > > &ApproxChoices = CPUConf->getApproxChoices();
+					       int> > > > &ApproxChoices = CPUConf->getApproxChoices();
       
       // Check for convolution as first operation
       CUSTOM_ASSERT((ApproxChoices.size() >= 1) &&
@@ -230,7 +227,6 @@ wrapper_ConvLayer(const char *hpvm_node_id, void *input, void *filter,
     	switch (activation_id) {
     	case -1:
     	  { // No activation
-    	    INFO("No activation Function\n");
     	    activation_out = add_out;
     	  }
     	  break;
@@ -325,15 +321,14 @@ wrapper_ConvLayer(const char *hpvm_node_id, void *input, void *filter,
   return NULL;
 }
 
-void *wrapper_ConvLayer2(
-    const char *hpvm_node_id, void *input, void *filter, void *bias,
-    int conv_pad_h, int conv_pad_w, int conv_stride_h, int conv_stride_w,
-    int pool_id, int pool_size_v, int pool_size_h, int pool_pad_v,
-    int pool_pad_h, int pool_stride_v, int pool_stride_h, int activation_id,
-    // NOTE: out_min, out_max are only relevant for ClippedRelu
-    float out_min, float out_max) {
+void *wrapper_ConvLayer2(const char *hpvm_node_id, void *input, void *filter, void *bias,
+			 int conv_pad_h, int conv_pad_w, int conv_stride_h, int conv_stride_w,
+			 int pool_id, int pool_size_v, int pool_size_h, int pool_pad_v,
+			 int pool_pad_h, int pool_stride_v, int pool_stride_h, int activation_id,
+			 // NOTE: out_min, out_max are only relevant for ClippedRelu
+			 float out_min, float out_max) {
 
-  //INFO("*** ------Conv Layer \n");
+  INFO("***  ConvLayer \n");
 
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
   if (NodeConf->isGPUNodeConfiguration()) {
@@ -344,11 +339,6 @@ void *wrapper_ConvLayer2(
         std::pair<GPUNodeConfiguration::TENSOR_OP,
                   std::vector<std::pair<GPUNodeConfiguration::APPROX, int>>>>
         &ApproxChoices = GPUConf->getApproxChoices();
-
-    // printf("*** Convolution \n ApproxChoice = %d \n  BatchNorm = %d \n CONV =
-    // %d \n", ApproxChoices[0].first,
-    //	       GPUNodeConfiguration::TENSOR_OP::BATCHNORM,
-    //       GPUNodeConfiguration::TENSOR_OP::CONV);
 
     // Check for convolution as first operation
     CUSTOM_ASSERT(
@@ -377,7 +367,6 @@ void *wrapper_ConvLayer2(
     void *activation_out;
     switch (activation_id) {
     case -1: { // No activation
-      // INFO("No activation Function\n");
       activation_out = add_out;
     } break;
     case 0: { // TanH activation
@@ -531,7 +520,6 @@ void *wrapper_ConvLayer2(
        }
 
        void* pool_out;
-
        if (pool_size_v > 0) {
          switch (pool_id) {
          case 0:
@@ -599,6 +587,8 @@ wrapper_FCLayer(const char *hpvm_node_id, void *input, void *weights,
                 // NOTE: out_min and out_max are only relevant for ClippedRelu
                 float out_min, float out_max) {
 
+  INFO("***  DenseLayer \n");
+    
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
   if (NodeConf->isGPUNodeConfiguration()) {
     DEBUG("GPU Configuration for FCLayer\n");
@@ -628,7 +618,6 @@ wrapper_FCLayer(const char *hpvm_node_id, void *input, void *weights,
       CUSTOM_ASSERT(
           (ApproxChoices.size() == 2) &&
           "Incorrect number of operations in provided FC layer configuration");
-      // INFO("No activation Function\n");
       activation_out = add_out;
     } break;
     case 0: { // TanH activation
@@ -739,7 +728,7 @@ wrapper_FCLayer(const char *hpvm_node_id, void *input, void *weights,
 
 void *wrapper_tensorRelu(const char *hpvm_node_id, void *input_ptr) {
 
-  INFO("*** Relu Operation \n");
+  INFO("***  TensorRelu \n");
 
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
 
@@ -893,10 +882,8 @@ void *wrapper_tensorBatchNorm(const char *hpvm_node_id, void *input_ptr,
                               void *gamma_ptr, void *beta_ptr, void *mean_ptr,
                               void *variance_ptr, double epsilon) {
 
-  INFO("*** BatchNorm Operation \n");
-
+  INFO("***  TensorBatchNorm  \n");
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
-
   
   if (NodeConf->isGPUNodeConfiguration()) {
       // mapped to GPU - get a GPU configuration
@@ -907,13 +894,7 @@ void *wrapper_tensorBatchNorm(const char *hpvm_node_id, void *input_ptr,
           std::pair<GPUNodeConfiguration::TENSOR_OP,
                     std::vector<std::pair<GPUNodeConfiguration::APPROX, int>>>>
           &ApproxChoices =
-
               GPUConf->getApproxChoices();
-
-      // printf("*** BatchNorm \n ApproxChoice = %d \n  BatchNorm = %d \n CONV = %d
-      // \n", ApproxChoices[0].first,
-      //	       GPUNodeConfiguration::TENSOR_OP::BATCHNORM,
-      //	       GPUNodeConfiguration::TENSOR_OP::CONV);
 
       // Approximation choices must be for a batchnorm operation
       CUSTOM_ASSERT(
@@ -955,6 +936,8 @@ void *wrapper_tensorBatchNorm(const char *hpvm_node_id, void *input_ptr,
 void *wrapper_tensorAdd(const char *hpvm_node_id, void *input_ptr,
                         void *bias_ptr) {
 
+  INFO("***  TensorAdd \n");
+  
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
 
   if (NodeConf->isGPUNodeConfiguration()) {
@@ -981,7 +964,7 @@ void *wrapper_tensorAdd(const char *hpvm_node_id, void *input_ptr,
   } else if (NodeConf->isCPUNodeConfiguration()) {
       DEBUG("Add operation: CPU Configuration\n");
       // Mapped to CPU - get a CPU configuration
-      CPUNodeConfiguration *CPUConf = (CPUNodeConfiguration *)NodeConf;
+      CPUNodeConfiguration *CPUConf = (CPUNodeConfiguration *) NodeConf;
 
       std::vector< std::pair< CPUNodeConfiguration::TENSOR_OP,
       		    std::vector< std::pair<CPUNodeConfiguration::APPROX,
@@ -994,7 +977,7 @@ void *wrapper_tensorAdd(const char *hpvm_node_id, void *input_ptr,
       	  "Invalid configuration generated for tensor add wrapper operation");
 
       return handleTensorAddApproximationTuples_CPU(ApproxChoices[0].second,
-				            input_ptr, bias_ptr);
+						    input_ptr, bias_ptr);
   } else {
       ERROR("Unsupported Configuration");
       abort();
@@ -1008,7 +991,7 @@ void *wrapper_tensorPooling(const char *hpvm_node_id, void *input_ptr,
                             int horizontal_pad, int vertical_stride,
                             int horizontal_stride) {
 
-  INFO("*** TensorPooling Operation \n");
+  INFO("***  TensorPooling  \n");
 
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
 
@@ -1084,6 +1067,9 @@ void *wrapper_tensorGroupConvolution(const char *hpvm_node_id, void *input,
                                      int horizontal_pad, int vertical_stride,
                                      int horizontal_stride, int conv_mode,
                                      int conv_groups) {
+
+  INFO("***  TensorGroupConv  \n");
+  
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
 
   if (NodeConf->isGPUNodeConfiguration()) {
@@ -1137,8 +1123,9 @@ void *wrapper_tensorGroupConvolution(const char *hpvm_node_id, void *input,
 }
 
 void *wrapper_tensorSoftmax(const char *hpvm_node_id, void *input_ptr) {
-  //  return tensorSoftmax(input_ptr);
 
+  INFO("***  TensorSoftmax \n ");
+  
   NodeConfiguration *NodeConf = RC->getNodeConfiguration(hpvm_node_id);
   if (NodeConf->isGPUNodeConfiguration()) {
 

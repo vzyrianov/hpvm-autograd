@@ -1243,8 +1243,7 @@ private:
   // HPVM Runtime API and Tensor runtime API
   FunctionCallee llvm_hpvm_initApproxhpvmRt;
   FunctionCallee llvm_hpvm_cleanupApproxhpvmRt;
-  FunctionCallee hpvm_request_tensor;
-
+ 
   FunctionCallee llvm_hpvm_initializeRuntimeController;
   FunctionCallee llvm_hpvm_clearRuntimeController;
 
@@ -1286,11 +1285,9 @@ void CGT_WrapperAPI::initRuntimeAPI() {
   // Get or insert Global declarations for
   // - initialization
   // - cleanup
-  // - request a tensor
   DECLARE(llvm_hpvm_initApproxhpvmRt);
   DECLARE(llvm_hpvm_cleanupApproxhpvmRt);
-  DECLARE(hpvm_request_tensor);
-
+ 
   DECLARE(llvm_hpvm_initializeRuntimeController);
   DECLARE(llvm_hpvm_clearRuntimeController);
 
@@ -1403,15 +1400,6 @@ void CGT_WrapperAPI::codeGen(DFLeafNode *N) {
   ConstantInt *TargetDeviceID =
       ConstantInt::get(Type::getInt32Ty(M.getContext()), 1);
 
-  for (Function::arg_iterator ai = F_wrapper_api->arg_begin(),
-                              ae = F_wrapper_api->arg_end();
-       ai != ae; ++ai) {
-    Argument *Arg = &*ai;
-    if (Arg->getType()->isPointerTy()) {
-      Value *Args[] = {Arg, TargetDeviceID};
-      CallInst::Create(hpvm_request_tensor, ArrayRef<Value *>(Args, 2), "", FI);
-    }
-  }
 
   CodeGenStateMachine CGM(&M, runtimeModule.get());
 

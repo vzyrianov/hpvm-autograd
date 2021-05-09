@@ -218,7 +218,7 @@ void *tensorConvCutlass(void *input_ptr, void *filter_ptr, int vertical_pad,
                         int horizontal_pad, int vertical_stride,
                         int horizontal_stride, int conv_mode, int conv_groups) {
 
-  INFO("*** TensorConvolution \n");
+  //INFO("*** TensorGroupConvolution \n");
   profileEvent("Conv");
 
   Tensor *input = (Tensor *)input_ptr;
@@ -290,7 +290,7 @@ void *tensorConvCutlass(void *input_ptr, void *filter_ptr, int vertical_pad,
     hostToDeviceCopy(input);
     hostToDeviceCopy(filter);
 
-    INFO("vertical_stride = %lu, horizontal_stride = %lu \n", vertical_stride,
+    DEBUG("vertical_stride = %lu, horizontal_stride = %lu \n", vertical_stride,
          horizontal_stride);
 
     checkCUDNN(cudnnCreateConvolutionDescriptor(&convDesc));
@@ -386,7 +386,7 @@ void *tensorHalfConvCutlass(void *input_ptr, void *filter_ptr, int vertical_pad,
                             int horizontal_stride, int conv_mode,
                             int conv_groups) {
 
-  INFO("*** TensorHConvolution \n");
+  DEBUG("*** TensorHConvolution \n");
   profileEvent("#Conv");
 
   Tensor *input = (Tensor *)input_ptr;

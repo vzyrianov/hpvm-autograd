@@ -52,9 +52,8 @@ if(USE_GFLAGS)
   list(APPEND LINK_LIBS gflags)
 endif()
 
-# -- Manually list the directories (TRT_LINK_DIRS) and libraries (TRT_LINK_LIBS)
-# tensor_runtime links to, because CMake doesn't help us do this.
-# This is needed by both hpvm-clang and the RPATH setting step (below).
+# -- Manually list the directories (TRT_LINK_DIRS) tensor_runtime links to.
+# This is needed by the RPATH setting step below, manually, because CMake doesn't help us do this.
 # First, take a guess at the paths to the libraries that are used here.
 # (CMake, why do you make this so difficult?)
 foreach(interface_lib ${LINK_LIBS})
@@ -62,18 +61,13 @@ foreach(interface_lib ${LINK_LIBS})
   foreach(actual_lib ${actual_libs})
     # ${actual_lib} may not be a path, then taking the directory of it should return "".
     get_filename_component(libdir ${actual_lib} DIRECTORY)
-    get_filename_component(libname ${actual_lib} NAME)
     if(NOT ${libdir} STREQUAL "")
       list(APPEND TRT_LINK_DIRS ${libdir})
-    endif()
-    if(NOT ${libname} STREQUAL "" AND NOT ${libname} STREQUAL "actual_libs-NOTFOUND")
-      list(APPEND TRT_LINK_LIBS ${libname})
     endif()
   endforeach()
 endforeach()
 # Dedup, just for shorter compiler arguments.
 list(REMOVE_DUPLICATES TRT_LINK_DIRS)
-list(REMOVE_DUPLICATES TRT_LINK_LIBS)
 
 # -- Definitions
 set(DEFS -DPROMISE_TUNER_ENABLED -DSIMULATION_MODE=true)
@@ -120,13 +114,6 @@ function(add_tensor_runtime target_name)
   foreach(libdir ${TRT_LINK_DIRS})
     target_link_options(${target_name} PRIVATE "-Wl,-rpath,${libdir}")
   endforeach()
-  # Also slap TRT_LINK_DIRS and TRT_LINK_LIBS on this target
-  # so that hpvm-clang can read them. (we'll create our own properties.)
-  set_target_properties(
-    ${target_name} PROPERTIES
-    TRT_LINK_DIRS "${TRT_LINK_DIRS}"
-    TRT_LINK_LIBS "${TRT_LINK_LIBS}"
-  )
 endfunction(add_tensor_runtime)
 
 # Adding new rule for building a cuDNN runtime library

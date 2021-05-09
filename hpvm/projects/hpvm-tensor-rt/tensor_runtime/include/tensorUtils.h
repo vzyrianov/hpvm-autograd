@@ -43,12 +43,12 @@ void dumpWeightsToFile(char *file_name, void *weights_ptr) {
     abort();
   }
 
-  // printf("size_in_bytes = %lu \n", weights->size_in_bytes);
   size_t bytes_written =
       fwrite(weights->host_data, 1, weights->size_in_bytes, fp);
-  // printf("bytes_written = %lu \n", bytes_written);
+
   fclose(fp);
 }
+
 
 void fillTensorWithOnes(void *tensor_ptr) {
 
@@ -201,8 +201,7 @@ struct Tensor *readTrainedWeights(const char *file_name, int data_type,
   long int size_in_bytes =
       type_size * dim1_size * dim2_size * dim3_size * dim4_size;
   float *tensor_data = (float *)malloc(sizeof(float) * num_elems);
-  printf("size_in_bytes  = %lu \n", size_in_bytes);
-
+ 
   int file_header_size = 0;
 
   FILE *file = fopen(file_name, "rb");
@@ -214,20 +213,18 @@ struct Tensor *readTrainedWeights(const char *file_name, int data_type,
   fseek(file, file_header_size, SEEK_CUR); // Skipping the file header
   size_t bytes_read = fread(tensor_data, 1, size_in_bytes, file);
 
-  // printf("size in bytes = %lu, bytes read = %lu \n", size_in_bytes,
-  // bytes_read);
-
   fclose(file);
 
   struct Tensor *weights = (struct Tensor *)create4DTensor(
       data_type, nchw, dim1_size, dim2_size, dim3_size, dim4_size);
 
   initTensorData(weights, tensor_data, size_in_bytes);
-  // compareValues(weights, tensor_data, num_elems);
+
   free(tensor_data);
 
   return weights;
 }
+
 
 struct Tensor *readInputBatch(const char *file_name, long data_type,
 			      long start, long end,
@@ -254,10 +251,8 @@ struct Tensor *readInputBatch(const char *file_name, long data_type,
 
   fclose(file);
 
-  // printf ("FIXED input BATCH read \n");
 
-  struct Tensor *weights = (struct Tensor *)create4DTensor(
-      data_type, nchw, dim1_size, dim2_size, dim3_size, dim4_size);
+  struct Tensor *weights = (struct Tensor *) create4DTensor(data_type, nchw, dim1_size, dim2_size, dim3_size, dim4_size);
 
   initTensorData(weights, tensor_data, size_in_bytes);
   free(tensor_data);
@@ -593,3 +588,4 @@ void dumpOutput(void *output_ptr, const char *file_name) {
 }
 
 #endif
+

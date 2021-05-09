@@ -111,9 +111,10 @@ void *handleTensorConvApproximationTuples_CPU(
     }
     case CPUNodeConfiguration::APPROX::PERFORATION: {
       PerfParams params = perfParamSet->getPerfParams(param);
-      INFO("perforation param = %i\n", param);
-      INFO("params.row = %i, params.col = %i, params.skip_offset = %i\n",
-           params.row, params.col, params.skip_offset);
+
+      DEBUG("perforation param = %i\n", param);
+      DEBUG("params.row = %i, params.col = %i, params.skip_offset = %i\n", params.row, params.col, params.skip_offset);
+      
       void *t_out;
       RC->resume_profiler();
       t_out = tensorConvApproxCPU(
@@ -131,9 +132,10 @@ void *handleTensorConvApproximationTuples_CPU(
     }
     case CPUNodeConfiguration::APPROX::INPUT_SAMPLING: {
       SampParams params = sampParamSet->getSampParams(param);
-      INFO("sampling param = %i\n", param);
-      INFO("params.skip_rate = %i, params.skip_offset = %i\n", params.skip_rate,
-           params.skip_offset);
+
+      DEBUG("sampling param = %i\n", param);
+      DEBUG("params.skip_rate = %i, params.skip_offset = %i\n", params.skip_rate, params.skip_offset);
+      
       void *t_out;
       RC->resume_profiler();
       t_out = tensorConvApproxCPU(input, filter, conv_pad_h, conv_pad_w,
@@ -536,9 +538,10 @@ void *handleTensorConvApproximationTuples(
     case GPUNodeConfiguration::APPROX::PERFORATION:
     case GPUNodeConfiguration::APPROX::PERFORATION_HP: {
       PerfParams params = perfParamSet->getPerfParams(param);
-      INFO("perforation param = %i\n", param);
-      INFO("params.row = %i, params.col = %i, params.skip_offset = %i\n",
-           params.row, params.col, params.skip_offset);
+
+      DEBUG("perforation param = %i\n", param);
+      DEBUG("params.row = %i, params.col = %i, params.skip_offset = %i\n", params.row, params.col, params.skip_offset);
+      
       void *t_out;
       RC->resume_profiler();
       t_out = tensorConvApproxHalf2(
@@ -557,9 +560,11 @@ void *handleTensorConvApproximationTuples(
     case GPUNodeConfiguration::APPROX::INPUT_SAMPLING:
     case GPUNodeConfiguration::APPROX::INPUT_SAMPLING_HP: {
       SampParams params = sampParamSet->getSampParams(param);
-      INFO("sampling param = %i\n", param);
-      INFO("params.skip_rate = %i, params.skip_offset = %i\n", params.skip_rate,
+      
+      DEBUG("sampling param = %i\n", param);
+      DEBUG("params.skip_rate = %i, params.skip_offset = %i\n", params.skip_rate,
            params.skip_offset);
+      
       void *t_out;
       RC->resume_profiler();
       t_out = tensorConvApproxHalf2(input, filter, conv_pad_h, conv_pad_w,

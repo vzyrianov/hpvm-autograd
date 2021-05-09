@@ -32,8 +32,8 @@ void ERROR(const char *format, ...) {
     return;
   va_list args;
   va_start(args, format);
-  printf("ERROR!: ");
-  vprintf(format, args);
+  fprintf(stderr, "ERROR!: ");
+  vfprintf(stderr, format, args);
   va_end(args);
 
   abort();

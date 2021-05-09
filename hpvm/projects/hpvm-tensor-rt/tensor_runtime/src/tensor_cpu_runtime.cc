@@ -38,6 +38,7 @@
 #include "tensor_runtime.h"
 #include "tensor_cpu_runtime.h"
 #include "approx_api.h"
+#include "tensor_utils.h"
 
 
 void llvm_hpvm_initTensorRtCPU() {
@@ -56,6 +57,7 @@ void *tensorRegularConvolutionCPU(void *input_ptr, void *filter_ptr,
                                   int vertical_pad, int horizontal_pad,
                                   int vertical_stride, int horizontal_stride,
                                   int conv_mode, int compute_precision) {
+
   Tensor *input = (Tensor *)input_ptr;
   Tensor *filter = (Tensor *)filter_ptr;
 
@@ -75,17 +77,15 @@ void *tensorRegularConvolutionCPU(void *input_ptr, void *filter_ptr,
                           horizontal_stride);
   int num_filter_elem = kernel_height * kernel_width * channels;
   int output_size = output_width * output_height;
-  printf("--CREATE 4D TENSOR\n");
+ 
   Tensor *output = (Tensor *)create4DTensor(0, 0, batch_size, num_filters,
                                                output_height, output_width);
   float *__restrict__ output_data = (float *)output->host_data;
-  printf("CREATED 4D TENSOR\n");
+ 
   long int conv_data_size = sizeof(float) * num_filter_elem * output_height *
                             output_width * batch_size;
   float *host_data = (float *)malloc(conv_data_size);
-  printf("host data: %p\n", host_data);
-  printf("conv_data_size: %d\n", conv_data_size);
-  printf("number of batches: %d\n", batch_size);
+
   omp_set_num_threads(4);
 #pragma omp parallel for
   for (int b = 0; b < batch_size; b++) {
@@ -131,17 +131,20 @@ void *tensorRegularConvolutionCPU(void *input_ptr, void *filter_ptr,
       }
     }
   }
+  
   free(host_data);
-  printf("END: %p\n", output);
+ 
   return output;
 }
 
-void *tensorRegularFilterSamplingConvolutionCPU(
-    void *input_ptr, void *filter_ptr, int vertical_pad, int horizontal_pad,
-    int vertical_stride, int horizontal_stride, int conv_mode,
-    int compute_precision, int skip_every, int start) {
-  Tensor *input = (Tensor *)input_ptr;
-  Tensor *filter = (Tensor *)filter_ptr;
+void *tensorRegularFilterSamplingConvolutionCPU(void *input_ptr, void *filter_ptr,
+						int vertical_pad, int horizontal_pad,
+						int vertical_stride, int horizontal_stride,
+						int conv_mode, int compute_precision,
+						int skip_every, int start) {
+
+  Tensor *input = (Tensor *) input_ptr;
+  Tensor *filter = (Tensor *) filter_ptr;
 
   float *__restrict__ host_image = (float *)input->host_data;
   float *__restrict__ host_filter = (float *)filter->host_data;
@@ -260,10 +263,12 @@ void *tensorRegularFilterSamplingConvolutionCPU(
   return output;
 }
 
-void *tensorIrregularFilterSamplingConvolutionCPU(
-    void *input_ptr, void *filter_ptr, int vertical_pad, int horizontal_pad,
-    int vertical_stride, int horizontal_stride, int conv_mode,
-    int compute_precision, int skip_every, int start) {
+void *tensorIrregularFilterSamplingConvolutionCPU(void *input_ptr, void *filter_ptr,
+						  int vertical_pad, int horizontal_pad,
+						  int vertical_stride, int horizontal_stride,
+						  int conv_mode, int compute_precision,
+						  int skip_every, int start) {
+
   Tensor *input = (Tensor *)input_ptr;
   Tensor *filter = (Tensor *)filter_ptr;
 
@@ -666,20 +671,24 @@ void *tensorConvApproxCPU(void *input_ptr, void *filter_ptr, int vertical_pad,
                           int horizontal_stride, int conv_mode,
                           int compute_precision, int row, int col,
                           int skip_every, int start) {
+
+  Tensor *input = (Tensor *) input_ptr;
+  Tensor *filter = (Tensor *) filter_ptr;
+
+  deviceToHostCopy(input);
+  deviceToHostCopy(filter);
+
   if (row > 1) {
-    printf("ROW PERFORATION\n");
     return tensorRowPerfConvolutionCPU(
         input_ptr, filter_ptr, vertical_pad, horizontal_pad, vertical_stride,
         horizontal_stride, conv_mode, compute_precision, row, start);
   }
   if (col > 1) {
-    printf("COL PERFORATION\n");
     return tensorColPerfConvolutionCPU(
         input_ptr, filter_ptr, vertical_pad, horizontal_pad, vertical_stride,
         horizontal_stride, conv_mode, compute_precision, col, start);
   }
   if (skip_every > 1) {
-    printf("INPUT FILTERING\n");
     Tensor *filter = (Tensor *)filter_ptr;
 
     const int kernel_height = filter->dims.dim_sizes[2];
@@ -694,7 +703,7 @@ void *tensorConvApproxCPU(void *input_ptr, void *filter_ptr, int vertical_pad,
         input_ptr, filter_ptr, vertical_pad, horizontal_pad, vertical_stride,
         horizontal_stride, conv_mode, compute_precision, skip_every, start);
   }
-  printf("---REGULAR CONV\n");
+  
   return tensorRegularConvolutionCPU(
       input_ptr, filter_ptr, vertical_pad, horizontal_pad, vertical_stride,
       horizontal_stride, conv_mode, compute_precision);
@@ -708,6 +717,9 @@ void *tensorConvCutlassCPU(void *input_ptr, void *filter_ptr, int vertical_pad,
   Tensor *input = (Tensor *)input_ptr;
   Tensor *filter = (Tensor *)filter_ptr;
 
+  deviceToHostCopy(input);
+  deviceToHostCopy(filter);
+  
   float *__restrict__ host_image = (float *)input->host_data;
   float *__restrict__ host_filter = (float *)filter->host_data;
 
@@ -784,8 +796,12 @@ void *tensorConvCutlassCPU(void *input_ptr, void *filter_ptr, int vertical_pad,
 }
 
 void *tensorAddCPU(void *x_ptr, void *bias_ptr) {
-  Tensor *x = (Tensor *)x_ptr;
-  Tensor *bias = (Tensor *)bias_ptr;
+
+  Tensor *x = (Tensor *) x_ptr;
+  Tensor *bias = (Tensor *) bias_ptr;
+
+  deviceToHostCopy(x);
+  deviceToHostCopy(bias);
 
   float *__restrict__ x_data = (float *)x->host_data;
   float *__restrict__ bias_data = (float *)bias->host_data;
@@ -794,6 +810,7 @@ void *tensorAddCPU(void *x_ptr, void *bias_ptr) {
   int h = x->dims.dim_sizes[2];
   int w = x->dims.dim_sizes[3];
 
+  
   if (x->num_elems == bias->num_elems) {
     int const1 = c * h * w;
     int const2 = h * w;
@@ -825,6 +842,7 @@ void *tensorAddCPU(void *x_ptr, void *bias_ptr) {
     }
   }
 
+  
   return x;
 }
 
@@ -836,6 +854,8 @@ void *tensorPoolingCPU(void *input_ptr, int poolFunction, int window_height,
                        int vertical_stride, int horizontal_stride) {
 
   Tensor *input = (Tensor *)input_ptr;
+  deviceToHostCopy(input);
+
   float *__restrict__ input_data = (float *)input->host_data;
 
   int batch_size = input->dims.dim_sizes[0];
@@ -853,8 +873,9 @@ void *tensorPoolingCPU(void *input_ptr, int poolFunction, int window_height,
   int x_radius = (window_width - 1) / 2;
   int y_radius = (window_height - 1) / 2;
 
-  Tensor *output = (Tensor *)create4DTensor(0, 0, batch_size, channels,
+  Tensor *output = (Tensor *) create4DTensor(0, 0, batch_size, channels,
                                                output_height, output_width);
+  
   float *__restrict__ output_data = (float *)output->host_data;
 
   omp_set_num_threads(4);
@@ -871,10 +892,10 @@ void *tensorPoolingCPU(void *input_ptr, int poolFunction, int window_height,
           int y_radius_var_max = y_radius_var + image_height;
           int x_radius_var = x_radius - c;
           int x_radius_var_max = x_radius_var + image_width;
-          int ki_min =
-              (y_radius_var > 0)
-                  ? ((y_radius_var < window_height) ? y_radius_var : -1)
-                  : 0;
+          int ki_min = (y_radius_var > 0)
+	    ? ((y_radius_var < window_height) ? y_radius_var : -1)
+	    : 0;
+	  
           int ki_max = (y_radius_var_max < window_height)
                            ? ((y_radius_var_max >= 0) ? y_radius_var_max : -1)
                            : window_height;
@@ -930,13 +951,15 @@ void *tensorPoolingCPU(void *input_ptr, int poolFunction, int window_height,
 }
 
 void *tensorTanhCPU(void *input_ptr) {
-  Tensor *input = (Tensor *)input_ptr;
 
+  Tensor *input = (Tensor *)input_ptr;
+  deviceToHostCopy(input);
+  
   float *input_data = (float *)input->host_data;
   size_t num_elems = input->num_elems;
 
   omp_set_num_threads(4);
-#pragma omp parallel for
+  #pragma omp parallel for
   for (size_t i = 0; i < num_elems; i++) {
     input_data[i] = tanhf(input_data[i]);
   }
@@ -945,17 +968,21 @@ void *tensorTanhCPU(void *input_ptr) {
 }
 
 void *tensorGemmCPU(void *lhs_ptr, void *rhs_ptr) {
+
   Tensor *lhs = (Tensor *)lhs_ptr;
   Tensor *rhs = (Tensor *)rhs_ptr;
+
+  deviceToHostCopy(lhs);
+  deviceToHostCopy(rhs);
 
   int m = lhs->dims.dim_sizes[0];
   int n = rhs->dims.dim_sizes[rhs->dims.num_dims - 1]; // output neurons
 
-  Tensor *output = (Tensor *)create4DTensor(0, 0, m, n, 1, 1);
+  Tensor *output = (Tensor *) create4DTensor(0, 0, m, n, 1, 1);
 
-  float *__restrict__ lhs_arr = (float *)lhs->host_data;
-  float *__restrict__ rhs_arr = (float *)rhs->host_data;
-  float *__restrict__ output_arr = (float *)output->host_data;
+  float *__restrict__ lhs_arr = (float *) lhs->host_data;
+  float *__restrict__ rhs_arr = (float *) rhs->host_data;
+  float *__restrict__ output_arr = (float *) output->host_data;
 
   int k = 1;
 #pragma unroll 4 // Can we unroll more???
@@ -964,6 +991,7 @@ void *tensorGemmCPU(void *lhs_ptr, void *rhs_ptr) {
   }
   float *tran_rhs = (float *)malloc(sizeof(float) * k * n);
   omp_set_num_threads(4);
+
 #pragma omp parallel for simd
   for (int l = 0; l < k; l++) {
     for (int j = 0; j < n; j++) {
@@ -982,47 +1010,71 @@ void *tensorGemmCPU(void *lhs_ptr, void *rhs_ptr) {
       output_arr[i * n + j] = sum;
     }
   }
+  
   free(tran_rhs);
+  
   return output;
 }
 
 void *tensorSoftmaxCPU(void *input_ptr) {
-  Tensor *input = (Tensor *)input_ptr;
 
-  float *logits = (float *)input->host_data;
+  Tensor *input = (Tensor *) input_ptr;
+
+  deviceToHostCopy(input);
+
+  float *logits = (float *) input->host_data;
   int n = input->dims.dim_sizes[0];
   int c = input->dims.dim_sizes[1];
+
   
   omp_set_num_threads(4);
 #pragma omp parallel for
   for (int i = 0; i < n; i++) {
-    float x = 0;
-    for (int j = i * c; j < c + i * c; j++) {
-      logits[j] = expf(logits[j]);
+
+    float max = logits[i * c];
+    for (unsigned int k = i * c; k < c + i * c; k++){
+      if (logits[k] > max){
+        max = logits[k];
+      }
+    }
+  
+    double x = 0;
+    for (int j = i * c; j < c + i * c; j++) {   
+      logits[j] = exp( logits[j] - max );
     }
 
 #pragma omp simd reduction(+ : x)
     for (int j = i * c; j < i * c + c; j++) {
       x += logits[j];
     }
-
+    
 #pragma omp simd
     for (int j = i * c; j < i * c + c; j++) {
       logits[j] /= x;
     }
+
+    //printf("logits[i * c] = %f \n ", logits[i * c]);
   }
+  
   return input;
 }
 
 void *tensorBatchNormCPU(void *input_ptr, void *gamma_ptr, void *beta_ptr,
                          void *mean_ptr, void *variance_ptr, double epsilon) {
 
-  Tensor *input = (Tensor *)input_ptr;
-  Tensor *gamma = (Tensor *)gamma_ptr;
-  Tensor *beta = (Tensor *)beta_ptr;
-  Tensor *mean = (Tensor *)mean_ptr;
-  Tensor *variance = (Tensor *)variance_ptr;
+  Tensor *input = (Tensor *) input_ptr;
+  Tensor *gamma = (Tensor *) gamma_ptr;
+  Tensor *beta = (Tensor *) beta_ptr;
+  Tensor *mean = (Tensor *) mean_ptr;
+  Tensor *variance = (Tensor *) variance_ptr;
 
+  deviceToHostCopy(input);
+  deviceToHostCopy(gamma);
+  deviceToHostCopy(beta);
+  deviceToHostCopy(mean);
+  deviceToHostCopy(variance);
+  
+  
   float *__restrict__ host_image = (float *)input->host_data;
   float *__restrict__ host_beta = (float *)beta->host_data;
   float *__restrict__ host_gamma = (float *)gamma->host_data;
@@ -1056,7 +1108,10 @@ void *tensorBatchNormCPU(void *input_ptr, void *gamma_ptr, void *beta_ptr,
 }
 
 void *tensorReluCPU(void *input_ptr) {
+
   Tensor *input = (Tensor *)input_ptr;
+  deviceToHostCopy(input);
+  
   float *input_data = (float *)input->host_data;
   size_t num_elems = input->num_elems;
 
@@ -1069,7 +1124,10 @@ void *tensorReluCPU(void *input_ptr) {
 }
 
 void *tensorRelu2CPU(void *input_ptr, float min, float max) {
+
   Tensor *input = (Tensor *)input_ptr;
+  deviceToHostCopy(input);
+  
   float *input_data = (float *)input->host_data;
   size_t num_elems = input->num_elems;
 
@@ -1078,54 +1136,6 @@ void *tensorRelu2CPU(void *input_ptr, float min, float max) {
     input_data[i] = (input_data[i] < min)
                         ? min
                         : ((input_data[i] > max) ? max : input_data[i]);
-  }
-
-  return input;
-}
-
-//
-// Derivatives
-//
-
-void* tensorReluDerivativeCPU(void* input_ptr) {
-  Tensor* input = (Tensor*) input_ptr;
-  float* input_data = (float*) input->host_data;
-  size_t num_elems = input->num_elems;
-
-#pragma omp simd
-  for (size_t i = 0; i < num_elems; ++i) {
-    input_data[i] = (input_data[i] < 0) ? 0 : 1; 
-  }
-
-  return input;
-}
-
-void *tensorRelu2DerivativeCPU(void *input_ptr, float min, float max) {
-  Tensor *input = (Tensor *)input_ptr;
-  float *input_data = (float *)input->host_data;
-  size_t num_elems = input->num_elems;
-
-#pragma omp simd
-  for (size_t i = 0; i < num_elems; i++) {
-    input_data[i] = (input_data[i] < min)
-                        ? 0
-                        : ((input_data[i] > max) ? 0 : 1);
-  }
-
-  return input;
-}
-
-void *tensorTanhDerivativeCPU(void *input_ptr) {
-  Tensor *input = (Tensor *)input_ptr;
-
-  float *input_data = (float *)input->host_data;
-  size_t num_elems = input->num_elems;
-
-  omp_set_num_threads(4);
-#pragma omp parallel for
-  for (size_t i = 0; i < num_elems; i++) {
-    float tan_val = tanhf(input_data[i]);
-    input_data[i] = 1.0f - (tan_val * tan_val);
   }
 
   return input;
