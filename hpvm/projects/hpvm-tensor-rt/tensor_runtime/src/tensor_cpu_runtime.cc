@@ -1140,3 +1140,62 @@ void *tensorRelu2CPU(void *input_ptr, float min, float max) {
 
   return input;
 }
+
+//
+// Derivatives
+//
+
+void* tensorAddDerivativeCPU(void *x_ptr, void *bias_ptr, unsigned int index) {
+  Tensor* copy = new Tensor();
+  tensorCopy(x_ptr, copy);
+
+  for(int i = 0; i < copy->num_elems; ++i) {
+    copy->host_data[i] = 1;
+  }
+  
+  return copy;
+}
+
+void* tensorReluDerivativeCPU(void* input_ptr) {
+  Tensor* input = (Tensor*) input_ptr;
+  float* input_data = (float*) input->host_data;
+  size_t num_elems = input->num_elems;
+
+#pragma omp simd
+  for (size_t i = 0; i < num_elems; ++i) {
+    input_data[i] = (input_data[i] < 0) ? 0 : 1; 
+  }
+
+  return input;
+}
+
+void *tensorRelu2DerivativeCPU(void *input_ptr, float min, float max) {
+  Tensor *input = (Tensor *)input_ptr;
+  float *input_data = (float *)input->host_data;
+  size_t num_elems = input->num_elems;
+
+#pragma omp simd
+  for (size_t i = 0; i < num_elems; i++) {
+    input_data[i] = (input_data[i] < min)
+                        ? 0
+                        : ((input_data[i] > max) ? 0 : 1);
+  }
+
+  return input;
+}
+
+void *tensorTanhDerivativeCPU(void *input_ptr) {
+  Tensor *input = (Tensor *)input_ptr;
+
+  float *input_data = (float *)input->host_data;
+  size_t num_elems = input->num_elems;
+
+  omp_set_num_threads(4);
+#pragma omp parallel for
+  for (size_t i = 0; i < num_elems; i++) {
+    float tan_val = tanhf(input_data[i]);
+    input_data[i] = 1.0f - (tan_val * tan_val);
+  }
+
+  return input;
+}

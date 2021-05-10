@@ -100,6 +100,12 @@ void *__hpvm__tensor_softmax(void *) CXX_NOEXCEPT;
 // New HPVM intrinsic for Setting Node ID
 void *__hpvm__node_id(int) CXX_NOEXCEPT;
 
+/*
+ * Grad Calls
+ */
+//Make this function pointer, unsigned int instead? 
+void *__hpvm__grad(...) CXX_NOEXCEPT;
+
 #include <unistd.h>
 
 long get_global_id(int) CXX_NOEXCEPT;

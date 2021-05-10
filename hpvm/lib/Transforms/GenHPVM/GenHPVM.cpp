@@ -781,6 +781,10 @@ bool GenHPVM::runOnModule(Module &M) {
       if (isHPVMCall_node_id(I)) {
         ReplaceCallWithIntrinsic(I, Intrinsic::hpvm_node_id, &toBeErased);
       }
+
+      if (isHPVMCall_grad(I)) {
+        ReplaceCallWithIntrinsic(I, Intrinsic::hpvm_grad, &toBeErased);
+      }
     }
 
     // Erase the __hpvm__node calls

@@ -10,6 +10,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "tensor_runtime.h"
+#include "tensor_cpu_runtime.h"
 
 void dummyFunction() {
 
@@ -67,4 +68,10 @@ void dummyFunction() {
   void *softmaxWrapper = (void *)&wrapper_tensorSoftmax;
 
   void *tensorNodeID = (void *)&tensor_set_node_id;
+
+  //Derivatives
+  void *tensorReluDerivative = (void*) &tensorReluDerivativeCPU;
+  void *tensorTanhDerivative = (void*) &tensorTanhDerivativeCPU;
+  void *tensorRelu2Derivative = (void*) &tensorRelu2DerivativeCPU;
+  void *tensorAddDerivative = (void*) &tensorAddDerivativeCPU;
 }

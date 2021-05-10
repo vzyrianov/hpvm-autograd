@@ -1,3 +1,6 @@
 hpvm/build
 hpvm/llvm
 *.patch
+*.ll
+*.bc
+out

@@ -313,5 +313,5 @@ let TargetPrefix = "hpvm" in {
  /***************************************************************************/
   /*                            Autograd intrinsics                         */
   /***************************************************************************/
-  def int_hpvm_grad : Intrinsic<[llvm_ptr_ty], [llvm_ptr_ty, llvm_i32_ty], []>;
+  def int_hpvm_grad : Intrinsic<[llvm_ptr_ty], [llvm_ptr_ty, llvm_ptr_ty, llvm_i32_ty], []>;
 }
