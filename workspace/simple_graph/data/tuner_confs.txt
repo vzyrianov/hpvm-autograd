@@ -1,6 +1,6 @@
 282.5141369999999
 +++++
 conf1 1 1 98.7 0.0
-1 gpu add fp32 1 
-2 gpu tanh fp32 1 
+1 cpu add fp32 1 
+2 cpu tanh fp32 1 
 -----

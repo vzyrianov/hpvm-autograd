@@ -12,14 +12,6 @@ void var_0_node(void *t1, size_t bytes_t1, void *t2, size_t bytes_t2) {
    __hpvm__return(2, r, (size_t)0);
 }
 
-void var_1_node(void *t1, size_t bytes_t1) {
-   __hpvm__hint(hpvm::TENSOR_TARGET);
-   __hpvm__attributes(1, t1, 0);
-
-   void *r = __hpvm__tensor_tanh(t1);
-   __hpvm__return(2, r, (size_t)0);
-}
-
 void root(void *input1, size_t input1_bytes, void *input2, size_t input2_bytes) {
    __hpvm__hint(hpvm::CPU_TARGET);
    __hpvm__attributes(4, input1, input1_bytes, input2, input2_bytes, 0);
@@ -31,13 +23,8 @@ void root(void *input1, size_t input1_bytes, void *input2, size_t input2_bytes) 
    __hpvm__bindIn(var_0, 2, 2, 0);
    __hpvm__bindIn(var_0, 3, 3, 0);
 
-   void *var_1 = __hpvm__createNodeND(0, var_1_node);
-
-   __hpvm__edge(var_0, var_1, 0, 0, 0, 0);
-   __hpvm__edge(var_0, var_1, 0, 1, 1, 0);
-   
-   __hpvm__bindOut(var_1, 0, 0, 0);
-   __hpvm__bindOut(var_1, 1, 1, 0);
+   __hpvm__bindOut(var_0, 0, 0, 0);
+   __hpvm__bindOut(var_0, 1, 1, 0);
 }
 
 struct ret_t {
@@ -87,8 +74,6 @@ int main(int argc, char *argv[]) {
       data[2] = 0.6f;
       data[3] = 0.6f;
    }
-
-   void * derivative = __hpvm__grad(root, (void*) args, 1);
 
    __hpvm__init();
 

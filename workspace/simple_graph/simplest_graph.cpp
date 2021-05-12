@@ -4,15 +4,7 @@
 #include <tensorUtils.h>
 #include <config.h>
 
-void var_0_node(void *t1, size_t bytes_t1, void *t2, size_t bytes_t2) {
-   __hpvm__hint(hpvm::TENSOR_TARGET);
-   __hpvm__attributes(2, t1, t2, 0);
-
-   void *r = __hpvm__tensor_add(t1, t2);
-   __hpvm__return(2, r, (size_t)0);
-}
-
-void var_1_node(void *t1, size_t bytes_t1) {
+void var_0_node(void *t1, size_t bytes_t1) {
    __hpvm__hint(hpvm::TENSOR_TARGET);
    __hpvm__attributes(1, t1, 0);
 
@@ -20,24 +12,17 @@ void var_1_node(void *t1, size_t bytes_t1) {
    __hpvm__return(2, r, (size_t)0);
 }
 
-void root(void *input1, size_t input1_bytes, void *input2, size_t input2_bytes) {
+void root(void *input1, size_t input1_bytes) {
    __hpvm__hint(hpvm::CPU_TARGET);
-   __hpvm__attributes(4, input1, input1_bytes, input2, input2_bytes, 0);
+   __hpvm__attributes(2, input1, input1_bytes, 0);
 
    void* var_0 = __hpvm__createNodeND(0, var_0_node);
 
    __hpvm__bindIn(var_0, 0, 0, 0);
    __hpvm__bindIn(var_0, 1, 1, 0);
-   __hpvm__bindIn(var_0, 2, 2, 0);
-   __hpvm__bindIn(var_0, 3, 3, 0);
 
-   void *var_1 = __hpvm__createNodeND(0, var_1_node);
-
-   __hpvm__edge(var_0, var_1, 0, 0, 0, 0);
-   __hpvm__edge(var_0, var_1, 0, 1, 1, 0);
-   
-   __hpvm__bindOut(var_1, 0, 0, 0);
-   __hpvm__bindOut(var_1, 1, 1, 0);
+   __hpvm__bindOut(var_0, 0, 0, 0);
+   __hpvm__bindOut(var_0, 1, 1, 0);
 }
 
 struct ret_t {
@@ -48,10 +33,7 @@ struct ret_t {
 typedef struct __attribute__((__packed__)) {
    void *input1;
    size_t input1_bytes;
-
-   void *input2;
-   size_t input2_bytes;
-  
+ 
   struct ret_t r;
 } RootIn;
 
@@ -66,29 +48,14 @@ int main(int argc, char *argv[]) {
    {
       Tensor* tensor1 = static_cast<Tensor*>(input1);
       float* data = (float*) tensor1->host_data;
-      data[0] = 0.1f;
-      data[1] = 0.1f;
-      data[2] = 0.1f;
-      data[3] = 0.1f;
+      data[0] = 0.7f;
+      data[1] = 0.7f;
+      data[2] = 0.7f;
+      data[3] = 0.7f;
    }
    
 
-   void *input2 = create4DTensor(0, nchw, 1, 1, 2, 2);
-   args->input2 = input2;
-   args->input2_bytes = 0;
-
-
-
-   {
-      Tensor* tensor2 = static_cast<Tensor*>(input2);
-      float* data = (float*) tensor2->host_data;
-      data[0] = 0.6f;
-      data[1] = 0.6f;
-      data[2] = 0.6f;
-      data[3] = 0.6f;
-   }
-
-   void * derivative = __hpvm__grad(root, (void*) args, 1);
+   void* derivative = __hpvm__grad(root, (void*) args, 0);
 
    __hpvm__init();
 
