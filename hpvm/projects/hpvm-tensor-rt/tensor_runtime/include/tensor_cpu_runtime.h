@@ -78,6 +78,8 @@ void *tensorSoftmaxCPU(void *input);
 
 //Derivatives
 
+void *tensorAddDerivativeCPU(void *x_ptr, void *bias_ptr, unsigned int index);
+
 void *tensorReluDerivativeCPU(void *input);
 
 void *tensorRelu2DerivativeCPU(void *input, float min, float max);

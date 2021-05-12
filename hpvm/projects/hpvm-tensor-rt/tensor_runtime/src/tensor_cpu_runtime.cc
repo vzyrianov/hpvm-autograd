@@ -1147,10 +1147,12 @@ void *tensorRelu2CPU(void *input_ptr, float min, float max) {
 
 void* tensorAddDerivativeCPU(void *x_ptr, void *bias_ptr, unsigned int index) {
   Tensor* copy = new Tensor();
-  tensorCopy(x_ptr, copy);
+  tensorCopy(x_ptr, (void*) copy);
+
+  float* copy_data = (float*) copy->host_data;
 
   for(int i = 0; i < copy->num_elems; ++i) {
-    copy->host_data[i] = 1;
+    copy_data[i] = 1.0f;
   }
   
   return copy;
