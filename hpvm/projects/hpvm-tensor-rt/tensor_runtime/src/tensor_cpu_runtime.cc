@@ -1142,6 +1142,28 @@ void *tensorRelu2CPU(void *input_ptr, float min, float max) {
 }
 
 //
+// Pure Versions of inplace functions
+//
+
+void* tensorReluCPUPure(void *input_ptr) {
+  Tensor* copy = (Tensor*) deepCopy(input_ptr);
+
+  return (void*) tensorReluCPU(copy);
+}
+
+void* tensorTanhCPUPure(void * input_ptr) {
+  Tensor* copy = (Tensor*) deepCopy(input_ptr);
+
+  return (void*) tensorTanhCPU(copy);
+}
+
+void* tensorAddCPUPure(void * input_ptr, void * bias) {
+  Tensor* copy = (Tensor*) deepCopy(input_ptr);
+
+  return (void*) tensorAddCPU(copy, (Tensor*) bias);
+}
+
+//
 // Derivatives
 //
 

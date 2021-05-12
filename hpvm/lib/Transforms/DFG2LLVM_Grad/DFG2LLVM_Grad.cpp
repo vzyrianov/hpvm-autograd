@@ -155,6 +155,24 @@ Function* DFG2LLVM_Grad::getGradImplementation(Module &M, CallInst* usageCase, D
 
 Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
 
+  //
+  //Non inplace functions
+  //
+  FunctionCallee tensorAddCPUPure;
+  DECLARE(tensorAddCPUPure)
+  
+  FunctionCallee tensorTanhCPUPure;
+  DECLARE(tensorTanhCPUPure)
+
+  FunctionCallee tensorReluCPUPure;
+  DECLARE(tensorReluCPUPure)
+
+  //
+  //Derivatives
+  //
+  FunctionCallee tensorAddDerivativeCPU;
+  DECLARE(tensorAddDerivativeCPU)
+
   FunctionCallee tensorReluDerivativeCPU;
   DECLARE(tensorReluDerivativeCPU)
 
@@ -193,11 +211,12 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
   BasicBlock* block = BasicBlock::Create(M.getContext(), "entry", hpvmGradImplementation);
   IRBuilder<> builder(block);
 
-  std::vector<Value*> inputs;
+  std::vector<Value*> parameters;
   for(size_t i = 0; i < (graphArgumentCount/2); ++i) {
-    Value* index = ConstantInt::get(Type::getInt32Ty(M.getContext()), i*2);
+    Value* index = ConstantInt::get(Type::getInt32Ty(M.getContext()), i*16);
     Value& argument = *(hpvmGradImplementation->arg_begin());
-    inputs.push_back(
+
+    parameters.push_back(
       builder.CreateGEP(
         &argument,
         index,
@@ -206,30 +225,39 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
     );
   }
 
-  Value* result = Constant::getNullValue(builder.getInt8PtrTy());
+  Value* returnResult = Constant::getNullValue(builder.getInt8PtrTy());
 
+  std::vector<Value*> previousValues = parameters;
   std::vector<Value*> forwardValues;
   for(auto operation : opOrder) {
     if(operation == Tanh) {
 
+      CallInst *callInst = builder.CreateCall(tensorTanhCPUPure, std::vector<Value*> {
+        previousValues[0]
+      });
+      previousValues = std::vector<Value*> { callInst };
     } else if(operation == ReLU) {
-
+      
     } else if(operation == Add) {
-
+      CallInst *callInst = builder.CreateCall(tensorAddCPUPure, std::vector<Value*> {
+        previousValues[0],
+        previousValues[1]
+      });
+      previousValues = std::vector<Value*> { callInst };
     }
   }
 
   
 
 
-  CallInst *callInst = builder.CreateCall(tensorReluDerivativeCPU, std::vector<Value*> {
+  //CallInst *callInst = builder.CreateCall(tensorReluDerivativeCPU, std::vector<Value*> {
     //Constant::getNullValue(builder.getInt8PtrTy())
-    inputs[0]
-  });
+    //parameters[0]
+  //});
 
   
   builder.CreateRet(
-    result
+    previousValues[0]
   );
   
   return hpvmGradImplementation;

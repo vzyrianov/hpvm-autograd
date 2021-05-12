@@ -43,6 +43,15 @@
 
 extern "C" {
 
+
+void *deepCopy(void * tensor_ptr) {
+  struct Tensor *original_tensor = (struct Tensor*) tensor_ptr;
+  struct Tensor *new_tensor = (struct Tensor *)malloc(sizeof(Tensor));
+  allocateMem(new_tensor, original_tensor->data_type, original_tensor->num_elems);
+  tensorCopy(original_tensor, new_tensor);
+  return (void*) new_tensor;
+}
+
 void freeTensor(void *tensor_ptr) {
   Tensor *tensor = (Tensor *)tensor_ptr;
 

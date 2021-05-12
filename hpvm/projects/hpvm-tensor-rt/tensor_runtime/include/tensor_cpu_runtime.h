@@ -76,8 +76,12 @@ void *tensorTanhCPU(void *input);
 void *tensorSoftmaxCPU(void *input);
 
 
-//Derivatives
+//Inplace
+void* tensorAddCPUPure(void * input_ptr, void* bias);
+void* tensorTanhCPUPure(void * input_ptr);
+void* tensorReluCPUPure(void * input_ptr);
 
+//Derivatives
 void *tensorAddDerivativeCPU(void *x_ptr, void *bias_ptr, unsigned int index);
 
 void *tensorReluDerivativeCPU(void *input);

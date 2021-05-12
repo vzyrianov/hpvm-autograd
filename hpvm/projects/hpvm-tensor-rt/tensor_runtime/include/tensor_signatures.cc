@@ -69,6 +69,11 @@ void dummyFunction() {
 
   void *tensorNodeID = (void *)&tensor_set_node_id;
 
+  //InPlace
+  void *tensorAddPure = (void*) &tensorAddCPUPure;
+  void *tensorTanhPure = (void*) &tensorTanhCPUPure;
+  void *tensorReluPure = (void*) &tensorReluCPUPure;
+
   //Derivatives
   void *tensorReluDerivative = (void*) &tensorReluDerivativeCPU;
   void *tensorTanhDerivative = (void*) &tensorTanhDerivativeCPU;

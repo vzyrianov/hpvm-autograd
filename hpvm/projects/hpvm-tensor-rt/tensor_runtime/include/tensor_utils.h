@@ -7,6 +7,8 @@
 
 extern "C" {
 
+void *deepCopy(void *tensor_ptr);
+
 void freeTensor(void *tensor_ptr);
 
 // Returns the size of the target cudnn datatype
