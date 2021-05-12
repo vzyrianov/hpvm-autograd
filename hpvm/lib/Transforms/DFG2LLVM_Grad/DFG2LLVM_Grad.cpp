@@ -141,7 +141,7 @@ bool DFG2LLVM_Grad::runOnModule(Module &M) {
     CallInst *replacementCall = CallInst::Create(gradImplementation->getFunctionType(), gradImplementation, replacementParameters, "", inst);
     inst->replaceAllUsesWith(replacementCall);
 
-    //TODO: Remove original instruction
+    inst->eraseFromParent();
 
     std::cout << "Encountered callinst" << std::endl;
   }
@@ -154,6 +154,14 @@ Function* DFG2LLVM_Grad::getGradImplementation(Module &M, CallInst* usageCase, D
 }
 
 Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
+
+  FunctionCallee tensorReluDerivativeCPU;
+  DECLARE(tensorReluDerivativeCPU)
+
+  FunctionCallee tensorTanhDerivativeCPU;
+  DECLARE(tensorTanhDerivativeCPU)
+
+
   //TODO: Rework algorithm
   std::vector<HpvmFunction> opOrder;
 
@@ -186,7 +194,7 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
   IRBuilder<> builder(block);
 
   std::vector<Value*> inputs;
-  for(size_t i = 0; i < graphArgumentCount; ++i) {
+  for(size_t i = 0; i < (graphArgumentCount/2); ++i) {
     Value* index = ConstantInt::get(Type::getInt32Ty(M.getContext()), i*2);
     Value& argument = *(hpvmGradImplementation->arg_begin());
     inputs.push_back(
@@ -197,14 +205,26 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
       )
     );
   }
+
   Value* result = Constant::getNullValue(builder.getInt8PtrTy());
+
+  std::vector<Value*> forwardValues;
+  for(auto operation : opOrder) {
+    if(operation == Tanh) {
+
+    } else if(operation == ReLU) {
+
+    } else if(operation == Add) {
+
+    }
+  }
+
   
 
-  FunctionCallee tensorReluDerivativeCPU;
-  DECLARE(tensorReluDerivativeCPU)
 
   CallInst *callInst = builder.CreateCall(tensorReluDerivativeCPU, std::vector<Value*> {
-    Constant::getNullValue(builder.getInt8PtrTy())
+    //Constant::getNullValue(builder.getInt8PtrTy())
+    inputs[0]
   });
 
   
