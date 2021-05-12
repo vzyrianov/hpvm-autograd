@@ -65,12 +65,32 @@ public:
 
 private:
 
+  enum HpvmFunction {
+    Add,
+    Tanh,
+    ReLU,
+    None
+  };
+
+  struct 
+
   std::unique_ptr<Module> runtimeModule;
 
   void initializeTensorAPI(Module &M);
-  Function* getGradImplementation(Module &M, CallInst* usageCase);
-  Function* createFunctionGrad(Module &M);
+  Function* getGradImplementation(Module &M, CallInst* usageCase, DFGraph* hpvmGraph);
+  Function* createFunctionGrad(Module &M, DFGraph* hpvmGraph);
+
+  HpvmFunction getHPVMIntrinsicCallInNode(Function* node);
 };
+
+void DFG2LLVM_Grad::initializeTensorAPI(Module &M) {
+  SMDiagnostic Err;
+  runtimeModule = parseIRFile(TENSOR_RT_LL, Err, M.getContext());
+  if (runtimeModule == nullptr)
+    DEBUG(errs() << Err.getMessage());
+  else
+    DEBUG(errs() << "Successfully loaded hpvm-tensor-rt API module\n");
+}
 
 bool DFG2LLVM_Grad::runOnModule(Module &M) {
   DEBUG(errs() << "\nDFG2LLVM_Grad PASS\n");
@@ -94,6 +114,11 @@ bool DFG2LLVM_Grad::runOnModule(Module &M) {
 
   Function *hpvmGradIntrinsic = M.getFunction("llvm.hpvm.grad");
 
+  if(hpvmGradIntrinsic == nullptr) {
+    std::cout << "No hpvm grad intrinsic found!" << std::endl;
+    return false;
+  }
+
   std::vector<CallInst*> users;
   for(Value::user_iterator it = hpvmGradIntrinsic->user_begin(); it != hpvmGradIntrinsic->user_end(); ++it) {
     if(CallInst *inst = dyn_cast<CallInst>(*it)) {
@@ -102,7 +127,7 @@ bool DFG2LLVM_Grad::runOnModule(Module &M) {
   }
 
   for (CallInst* inst : users) {
-    Function* gradImplementation = getGradImplementation(M, inst);
+    Function* gradImplementation = getGradImplementation(M, inst, root->getChildGraph());
 
     std::vector<Value*> allParameters;
     if(inst->getNumArgOperands() < 3) {
@@ -124,41 +149,93 @@ bool DFG2LLVM_Grad::runOnModule(Module &M) {
   return true;
 }
 
-Function* DFG2LLVM_Grad::getGradImplementation(Module &M, CallInst* usageCase) {
-  return createFunctionGrad(M);
+Function* DFG2LLVM_Grad::getGradImplementation(Module &M, CallInst* usageCase, DFGraph* hpvmGraph) {
+  return createFunctionGrad(M, hpvmGraph);
 }
 
-Function* DFG2LLVM_Grad::createFunctionGrad(Module &M) {
+Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
+  //TODO: Rework algorithm
+  std::vector<HpvmFunction> opOrder;
+
+  // *(first->OutDFEdges[0]).SourcePosition  or  DestPosition
+  DFNode* first = hpvmGraph->getEntry();
+
+  size_t graphArgumentCount = first->getFuncPointer()->arg_size();
+
+  while(first != hpvmGraph->getExit()) {
+    std::cout << "==Encountered a node" << std::endl;
+    
+    if(first->getInstruction() != nullptr) {
+      std::cout << first->getInstruction()->getCalledFunction()->getName().str() << std::endl;
+      if(first->getFuncPointer() != nullptr) {
+        std::cout << "---------Valid Node----------" << std::endl;
+        std::cout << first->getFuncPointer()->getName().str() << std::endl;
+        
+        opOrder.push_back(getHPVMIntrinsicCallInNode(first->getFuncPointer()));
+      }
+    }
+    first = *first->successors_begin();
+  }
+
   std::vector<Type*> params {Type::getInt8PtrTy(M.getContext())};
 
   FunctionType* functionType = FunctionType::get(Type::getInt8PtrTy(M.getContext()), params, false);
-  Function* hpvmGradImplementation = Function::Create(functionType, GlobalValue::LinkageTypes::ExternalLinkage, "", M);
+  Function* hpvmGradImplementation = Function::Create(functionType, GlobalValue::LinkageTypes::ExternalLinkage, "GradFunction", M);
 
   BasicBlock* block = BasicBlock::Create(M.getContext(), "entry", hpvmGradImplementation);
   IRBuilder<> builder(block);
 
+  std::vector<Value*> inputs;
+  for(size_t i = 0; i < graphArgumentCount; ++i) {
+    Value* index = ConstantInt::get(Type::getInt32Ty(M.getContext()), i*2);
+    Value& argument = *(hpvmGradImplementation->arg_begin());
+    inputs.push_back(
+      builder.CreateGEP(
+        &argument,
+        index,
+        "ArgumentGEP"
+      )
+    );
+  }
+  Value* result = Constant::getNullValue(builder.getInt8PtrTy());
+  
 
-  //STOPED HERE
   FunctionCallee tensorReluDerivativeCPU;
   DECLARE(tensorReluDerivativeCPU)
 
-  CallInst *callInst = builder.CreateCall(tensorReluDerivativeCPU);
+  CallInst *callInst = builder.CreateCall(tensorReluDerivativeCPU, std::vector<Value*> {
+    Constant::getNullValue(builder.getInt8PtrTy())
+  });
 
   
   builder.CreateRet(
-    Constant::getNullValue(builder.getInt8PtrTy())
+    result
   );
   
   return hpvmGradImplementation;
 }
 
-void DFG2LLVM_Grad::initializeTensorAPI(Module &M) {
-  SMDiagnostic Err;
-  runtimeModule = parseIRFile(TENSOR_RT_LL, Err, M.getContext());
-  if (runtimeModule == nullptr)
-    DEBUG(errs() << Err.getMessage());
-  else
-    DEBUG(errs() << "Successfully loaded hpvm-tensor-rt API module\n");
+DFG2LLVM_Grad::HpvmFunction DFG2LLVM_Grad::getHPVMIntrinsicCallInNode(Function* node) {
+  for(BasicBlock &BB : *node) {
+    for (Instruction &I : BB) {
+      if(!isa<CallInst>(I))
+        continue;
+      
+      CallInst &CI = cast<CallInst>(I);
+
+      if(CI.getCalledValue()->stripPointerCasts()->getName().equals("llvm.hpvm.tensor.tanh")) {
+        std::cout << "Node contains Tanh" << std::endl;
+        return Tanh;
+      }
+
+      if(CI.getCalledValue()->stripPointerCasts()->getName().equals("llvm.hpvm.tensor.add")) {
+        std::cout << "Node contains Add" << std::endl;
+        return Add;
+      }
+    }
+  }
+
+  return None;
 }
 
 } // End of namespace
