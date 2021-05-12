@@ -53,8 +53,11 @@ def compile_hpvm_c(
             f"configuration-inputs-filename={conf_file}"
         ]
     elif tensor_target == "grad":
-        passes += ["LLVMInPlaceDFGAnalysis", "LLVMDFG2LLVM_Grad"]
-        pass_flags += ["inplace", "dfg2llvm-grad"]
+        passes += ["LLVMInPlaceDFGAnalysis", "LLVMDFG2LLVM_Grad", "LLVMDFG2LLVM_WrapperAPI"]
+        pass_flags += [
+            "inplace", "dfg2llvm-grad", "dfg2llvm-wrapperapi",
+            f"configuration-inputs-filename={conf_file}"
+        ]
     elif tensor_target == "cudnn":
         passes += ["LLVMInPlaceDFGAnalysis", "LLVMDFG2LLVM_CUDNN"]
         pass_flags += ["inplace", "dfg2llvm-cudnn"]
