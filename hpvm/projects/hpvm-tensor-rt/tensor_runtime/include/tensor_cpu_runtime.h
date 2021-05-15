@@ -75,6 +75,8 @@ void *tensorTanhCPU(void *input);
 
 void *tensorSoftmaxCPU(void *input);
 
+//Hack to get around llvm 
+void* dereferencePtrToPtr(void* ptr);
 
 //Inplace
 void* tensorAddCPUPure(void * input_ptr, void* bias);

@@ -49,6 +49,14 @@ void *deepCopy(void * tensor_ptr) {
   struct Tensor *new_tensor = (struct Tensor *)malloc(sizeof(Tensor));
   allocateMem(new_tensor, original_tensor->data_type, original_tensor->num_elems);
   tensorCopy(original_tensor, new_tensor);
+
+  new_tensor->dims.num_dims = original_tensor->dims.num_dims;
+  new_tensor->dims.dim_sizes = (size_t *) malloc(sizeof(size_t) * original_tensor->dims.num_dims);
+  for(int i = 0; i < original_tensor->dims.num_dims; ++i) {
+    new_tensor->dims.dim_sizes[i] = original_tensor->dims.dim_sizes[i];
+  }
+
+
   return (void*) new_tensor;
 }
 

@@ -69,6 +69,9 @@ void dummyFunction() {
 
   void *tensorNodeID = (void *)&tensor_set_node_id;
 
+  //
+  void *dereferencePointer = (void*) &dereferencePtrToPtr;
+
   //InPlace
   void *tensorAddPure = (void*) &tensorAddCPUPure;
   void *tensorTanhPure = (void*) &tensorTanhCPUPure;

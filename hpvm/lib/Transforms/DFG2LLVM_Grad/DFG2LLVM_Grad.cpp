@@ -156,6 +156,12 @@ Function* DFG2LLVM_Grad::getGradImplementation(Module &M, CallInst* usageCase, D
 Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
 
   //
+  // For the hack to get around LLVM pointer type system
+  //
+  FunctionCallee dereferencePtrToPtr;
+  DECLARE(dereferencePtrToPtr);
+
+  //
   //Non inplace functions
   //
   FunctionCallee tensorAddCPUPure;
@@ -178,6 +184,12 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
 
   FunctionCallee tensorTanhDerivativeCPU;
   DECLARE(tensorTanhDerivativeCPU)
+
+  //
+  // Other
+  //
+  FunctionCallee tensorGemmCPU;
+  DECLARE(tensorGemmCPU)
 
 
   //TODO: Rework algorithm
@@ -216,38 +228,79 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
     Value* index = ConstantInt::get(Type::getInt32Ty(M.getContext()), i*16);
     Value& argument = *(hpvmGradImplementation->arg_begin());
 
-    parameters.push_back(
-      builder.CreateGEP(
-        &argument,
-        index,
-        "ArgumentGEP"
-      )
+    Value* gepInst = builder.CreateGEP(
+      &argument,
+      index,
+      "ArgumentGEP"
     );
+/*
+    DataLayout DL(&M);
+    Value* pointerInst = builder.CreatePointerCast(gepInst, builder.getIntPtrTy(DataLayout(DL)), "ArgumentLoad");
+    Value* pointerLoad = builder.CreateAlignedLoad(pointerInst->, 8, "ArgumentLoad");
+    //Value* pointerLoad = builder.CreateLoad(builder.getIntPtrTy(DataLayout(DL)), pointerInst, "ArgumentLoad");
+    Value* pointerInst2 = builder.CreateIntToPtr(pointerLoad, builder.getIntPtrTy(DataLayout(DL)), "ArgumentPtr");*/
+
+
+    //parameters.push_back((pointerInst2, builder.getIntPtrTy(DataLayout(DL)), "ArgumentPtrLoad"));
+
+    parameters.push_back(builder.CreateCall(dereferencePtrToPtr, std::vector<Value*> {gepInst}, "Argument"));
   }
 
-  Value* returnResult = Constant::getNullValue(builder.getInt8PtrTy());
+  Value* returnResult = nullptr;
 
   std::vector<Value*> previousValues = parameters;
-  std::vector<Value*> forwardValues;
+
+  std::vector<std::vector<Value*>> forwardValues {parameters};
   for(auto operation : opOrder) {
+    CallInst *callInst;
+
     if(operation == Tanh) {
 
-      CallInst *callInst = builder.CreateCall(tensorTanhCPUPure, std::vector<Value*> {
+      callInst = builder.CreateCall(tensorTanhCPUPure, std::vector<Value*> {
         previousValues[0]
       });
-      previousValues = std::vector<Value*> { callInst };
+
     } else if(operation == ReLU) {
       
     } else if(operation == Add) {
-      CallInst *callInst = builder.CreateCall(tensorAddCPUPure, std::vector<Value*> {
+      callInst = builder.CreateCall(tensorAddCPUPure, std::vector<Value*> {
         previousValues[0],
         previousValues[1]
       });
-      previousValues = std::vector<Value*> { callInst };
     }
+
+    previousValues = std::vector<Value*> { callInst };
+
+    forwardValues.push_back(std::vector<Value*> { callInst });
   }
 
-  
+  for(size_t i = 0; i < opOrder.size(); ++i) {
+    CallInst *callInst;
+
+    if(opOrder[i] == Tanh) {
+
+      callInst = builder.CreateCall(tensorTanhDerivativeCPU, std::vector<Value*> {
+        forwardValues[i][0]
+      });
+    } else if(opOrder[i] == ReLU) {
+      
+    } else if(opOrder[i] == Add) {
+      callInst = builder.CreateCall(tensorAddDerivativeCPU, std::vector<Value*> {
+        forwardValues[i][0],
+        forwardValues[i][1],
+        ConstantInt::get(Type::getInt32Ty(M.getContext()), 0)
+      });
+    }
+
+    if(returnResult == nullptr) {
+      returnResult = callInst;
+    }
+    else {
+      returnResult = builder.CreateCall(tensorGemmCPU, std::vector<Value*> {
+        returnResult, callInst
+      });
+    }
+  }
 
 
   //CallInst *callInst = builder.CreateCall(tensorReluDerivativeCPU, std::vector<Value*> {
@@ -257,7 +310,7 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
 
   
   builder.CreateRet(
-    previousValues[0]
+    returnResult
   );
   
   return hpvmGradImplementation;
