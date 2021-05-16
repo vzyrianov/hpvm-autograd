@@ -87,8 +87,19 @@ int main(int argc, char *argv[]) {
       data[2] = 0.6f;
       data[3] = 0.6f;
    }
-
+   std::cout << "args pointer: " << args << std::endl;
+   std::cout << "arg1 pointer: " << &(args->input1) << std::endl;
+   std::cout << "arg2 pointer: " << &(args->input2) << std::endl;
    void * derivative = __hpvm__grad(root, (void*) args, 1);
+
+   {
+      Tensor* derivativeTensor = static_cast<Tensor*>(derivative);
+      
+      float* data = (float*) derivativeTensor->host_data;
+      std::cout << "num_elems " << derivativeTensor->num_elems << std::endl;
+      std::cout << "size_in_bytes" << derivativeTensor->size_in_bytes << std::endl;
+      std::cout << "Output of tensor " << data[0] << " " << data[1] << " " << data[2] << " " << data[3] << std::endl;
+   }
 
    __hpvm__init();
 
