@@ -174,6 +174,12 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
   DECLARE(tensorReluCPUPure)
 
   //
+  //
+  //
+  FunctionCallee tensorElementWiseMultiplyCPU;
+  DECLARE(tensorElementWiseMultiplyCPU);
+
+  //
   //Derivatives
   //
   FunctionCallee tensorAddDerivativeCPU;
@@ -296,7 +302,7 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
       returnResult = callInst;
     }
     else {
-      returnResult = builder.CreateCall(tensorGemmCPU, std::vector<Value*> {
+      returnResult = builder.CreateCall(tensorElementWiseMultiplyCPU, std::vector<Value*> {
         returnResult, callInst
       });
     }

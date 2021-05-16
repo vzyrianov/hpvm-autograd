@@ -77,6 +77,9 @@ void dummyFunction() {
   void *tensorTanhPure = (void*) &tensorTanhCPUPure;
   void *tensorReluPure = (void*) &tensorReluCPUPure;
 
+  //New Operations
+  void *elementWiseMultiply = (void*) &tensorElementWiseMultiplyCPU;
+
   //Derivatives
   void *tensorReluDerivative = (void*) &tensorReluDerivativeCPU;
   void *tensorTanhDerivative = (void*) &tensorTanhDerivativeCPU;

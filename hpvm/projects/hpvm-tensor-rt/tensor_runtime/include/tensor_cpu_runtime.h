@@ -83,6 +83,9 @@ void* tensorAddCPUPure(void * input_ptr, void* bias);
 void* tensorTanhCPUPure(void * input_ptr);
 void* tensorReluCPUPure(void * input_ptr);
 
+//New Operations
+void* tensorElementWiseMultiplyCPU(void* input_ptr1, void* input_ptr2);
+
 //Derivatives
 void *tensorAddDerivativeCPU(void *x_ptr, void *bias_ptr, unsigned int index);
 

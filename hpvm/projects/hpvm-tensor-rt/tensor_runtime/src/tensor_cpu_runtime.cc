@@ -1173,6 +1173,26 @@ void* tensorAddCPUPure(void * input_ptr, void * bias) {
 }
 
 //
+// New Operations
+//
+
+void* tensorElementWiseMultiplyCPU(void* input_ptr1, void* input_ptr2) {
+  Tensor* copy = (Tensor*) deepCopy(input_ptr1);
+  Tensor* input1 = (Tensor*) input_ptr1;
+  Tensor* input2 = (Tensor*) input_ptr2;
+
+  float* copy_data = (float*) copy->host_data;
+  float* input1_data = (float*) input1->host_data;
+  float* input2_data = (float*) input2->host_data;
+
+  for(int i = 0; i < copy->num_elems; ++i) {
+    copy_data[i] = input1_data[i] * input2_data[i];
+  }
+
+  return copy;
+}
+
+//
 // Derivatives
 //
 
