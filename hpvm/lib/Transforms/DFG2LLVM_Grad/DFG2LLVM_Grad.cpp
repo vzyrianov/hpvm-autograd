@@ -267,7 +267,9 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
       });
 
     } else if(operation == ReLU) {
-      
+      callInst = builder.CreateCall(tensorReluCPUPure, std::vector<Value*> {
+        previousValues[0]
+      });
     } else if(operation == Add) {
       callInst = builder.CreateCall(tensorAddCPUPure, std::vector<Value*> {
         previousValues[0],
@@ -289,7 +291,9 @@ Function* DFG2LLVM_Grad::createFunctionGrad(Module &M, DFGraph* hpvmGraph) {
         forwardValues[i][0]
       });
     } else if(opOrder[i] == ReLU) {
-      
+      callInst = builder.CreateCall(tensorReluDerivativeCPU, std::vector<Value*> {
+        forwardValues[i][0]
+      });
     } else if(opOrder[i] == Add) {
       callInst = builder.CreateCall(tensorAddDerivativeCPU, std::vector<Value*> {
         forwardValues[i][0],
@@ -335,10 +339,18 @@ DFG2LLVM_Grad::HpvmFunction DFG2LLVM_Grad::getHPVMIntrinsicCallInNode(Function* 
         return Tanh;
       }
 
+
+      if(CI.getCalledValue()->stripPointerCasts()->getName().equals("llvm.hpvm.tensor.relu")) {
+        std::cout << "Node contains Relu" << std::endl;
+        return ReLU;
+      }
+
       if(CI.getCalledValue()->stripPointerCasts()->getName().equals("llvm.hpvm.tensor.add")) {
         std::cout << "Node contains Add" << std::endl;
         return Add;
       }
+
+
     }
   }
 
